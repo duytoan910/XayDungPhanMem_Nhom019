@@ -10,36 +10,36 @@ using Newtonsoft.Json;
 
 namespace ServicesProject.Controllers
 {
-    public class CustomerController : BaseController
+    public class CustomerController : Controller
     {
         CustomerDAL cusDAL;
         public CustomerController()
         {
             cusDAL = new CustomerDAL();
         }
-        public object getCustomer()
+        public JsonResult getCustomer()
         {
-            return JsonConvert.SerializeObject(cusDAL.getCustomer());
+            return Json(cusDAL.getCustomer(), JsonRequestBehavior.AllowGet);
         }
-        public object getCustomerByOverdueDisk()
+        public JsonResult getCustomerByOverdueDisk()
         {
-            return JsonConvert.SerializeObject(cusDAL.getCustomerByOverdueDisk());
+            return Json(cusDAL.getCustomerByOverdueDisk(), JsonRequestBehavior.AllowGet);
         }
-        public object getCustomerByLateCharge()
+        public JsonResult getCustomerByLateCharge()
         {
-            return JsonConvert.SerializeObject(cusDAL.getCustomerByLateCharge());
+            return Json(cusDAL.getCustomerByLateCharge(), JsonRequestBehavior.AllowGet);
         }
         public void addCustomer(Customer e)
         {
             cusDAL.addCustomer(e);
         }
-        public object deleteCustomer(Guid id)
+        public JsonResult deleteCustomer(Guid id)
         {
-            return JsonConvert.SerializeObject(cusDAL.deleteCustomer(id));
+            return Json(cusDAL.deleteCustomer(id), JsonRequestBehavior.AllowGet);
         }
-        public object findCustomer(Guid id)
+        public JsonResult findCustomer(Guid id)
         {
-            return JsonConvert.SerializeObject(cusDAL.findCustomer(id));
+            return Json(cusDAL.findCustomer(id), JsonRequestBehavior.AllowGet);
         }
         public void editCustomer(Customer c)
         {
