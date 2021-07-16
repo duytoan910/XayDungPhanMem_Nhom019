@@ -123,10 +123,11 @@ namespace DAL
 
         public int CountReservation(Guid titleID) //Tựa được đặt
         {
-            var list = (from m in db.Reservations
-                        where m.diskTitleId == titleID 
-                        select m).ToList();
-            return list.Count;
+            //    var list = (from m in db.Reservations
+            //                where m.diskTitleId == titleID 
+            //                select m).ToList();
+            //    return list.Count;
+            return 0;
         }
     }
 }

@@ -48,13 +48,13 @@ namespace DAL
 
         bool CheckLateCharge(Guid idCus)
         {
-            var listCharge = (from c in db.LateCharges
-                              where c.RentalBill.customerID == idCus
-                              orderby c.status
-                              select c).ToList();
+            //var listCharge = (from c in db.LateCharges
+            //                  where c.RentalBill.customerID == idCus
+            //                  orderby c.status
+            //                  select c).ToList();
 
-            if (listCharge.Count > 0)
-                return true;
+            //if (listCharge.Count > 0)
+            //    return true;
             return false;
         }
         //Load danh sách khách hàng có phí trễ hạn

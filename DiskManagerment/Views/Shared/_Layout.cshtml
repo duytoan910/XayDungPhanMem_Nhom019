@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link rel="stylesheet" href="~/Content/css/all.min.css">
+    <link rel="stylesheet" href="~/Content/css/datatables.min.css">
+    <link rel="stylesheet" href="~/Content/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/Content/fontawesome-pro-5.2.0-web/css/all.min.css" />
+    <link rel="stylesheet" href="~/Content/kendo_2021.1.330/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="~/Content/kendo_2021.1.330/styles/kendo_theme_bootstrap_blue.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+
+    <script src="~/Content/kendo_2021.1.330/js/jquery.min.js"></script>
+    <script src="~/Content/js/jszip.min.js"></script>
+    <script src="~/Content/js/moment.js"></script>
+    <script src="~/Content/kendo_2021.1.330/js/kendo.all.min.js"></script>
+    <script src="~/Content/bootstrap-4.3.1-dist/js/popper.min.js"></script>
+    <script src="~/Content/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <div id="dialog"></div>
+    <span id="popupNotification"></span>
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/QuanLyNhanVien" class="nav-link permission forAD">Quản lý Nhân Viên</a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/QuanLyBatDongSan" class="nav-link">Quản lý Bất Động Sản</a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/QuanLyKhachHang" class="nav-link">Quản lý Khách Hàng</a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="/QuanLyHopDong" class="nav-link">Quản lý Hợp Đồng</a>
+            </li>
+        </ul>
+    </nav>
+
+    <!--Menu-->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="#" class="brand-link">
+            <span class="brand-text font-weight-light"><strong>Quản Lý Bất Động Sản</strong></span>
+        </a>
+
+        <div class="sidebar">
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!--Các chức năng quản lý-->
+                    <li class="nav-item has-treeview permission forAD">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-user-tie" style="width:20px;"></i>
+                            <p>
+                                Quản Lý Nhân Viên<i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/QuanLyNhanVien" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh Sách Nhân Viên</p>
+
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link btn_Menu_AddEmployee ">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm Mới Nhân Viên</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-home"></i>
+                            <p>
+                                Quản Lý Bất Động Sản<i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/QuanLyBatDongSan" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh Sách Bất Động Sản</p>
+                                </a>
+                            </li>
+                            <li class="nav-item perform permission forNV">
+                                <a href="#" class="nav-link btn_Menu_AddBDS">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm Mới Bất Động Sản</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/ThongKeBatDongSan" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thống Kê Bất Động Sản</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-users" style="width:20px;"></i>
+                            <p>
+                                Quản Lý Khách Hàng<i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/QuanLyKhachHang" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh Sách Khách Hàng</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link btn_Menu_AddCustomer">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm Mới Khách Hàng</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-file-contract"></i>
+                            <p>
+                                Quản Lý Hợp Đồng<i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/QuanLyHopDong" class="nav-link">
+                                    <i class="nav-icon far fa-circle text-danger"></i>
+                                    <p>Danh Sách Hợp Đồng</p>
+                                </a>
+                            </li>
+                            <li class="nav-item permission forNV">
+                                <a href="#" class="nav-link btn_Menu_AddHD">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm Mới Hợp Đồng</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--Quản lý Tài Khoản-->
+                    <li class="nav-header">THÔNG TIN</li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link btn_Menu_Logout">
+                            <i class="nav-icon fas fa-sign-out-alt"></i>
+                            <p class="text">Đăng xuất</p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </aside>
+
+    <div class="content-wrapper" style="">
+        @RenderBody()
+    </div>
+
+    <script src="~/Content/js/adminlte.min.js"></script>
+    <script src="~/Content/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/js/demo.js"></script>
+</body>
+</html>
