@@ -45,108 +45,72 @@ namespace DAL
                 new DiskTitle()
                 {
                    diskTitleName = "The Shawshank Redemption",
-                   diskTypeId = "MOVIES"
+                   diskTypeId = "MOVIES",
+                   diskCode = "MV1"
                 },
                 new DiskTitle()
                 {
                    diskTitleName = "The Godfather",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Pulp Fiction",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "The Dark Knight",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Titanic",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Avatar",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Lion King",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "ET - The Extra Terrestrial",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Lord of the Rings: The Fellowship of the Ring",
-                   diskTypeId = "MOVIES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Home Alone",
-                   diskTypeId = "MOVIES"
+                   diskTypeId = "MOVIES",
+                   diskCode = "MV2"
                 },
 
                 //Tựa game
                 new DiskTitle()
                 {
                    diskTitleName = "Call of Duty",
-                   diskTypeId = "GAMES"
+                   diskTypeId = "GAMES",
+                   diskCode = "GM1"
                 },
                 new DiskTitle()
                 {
                    diskTitleName = "Half-Life 2",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "BioShock",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Batman: Arkham Asylum",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Mass Effect 2",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Portal",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "The Last of Us",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Fallout",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "God of War",
-                   diskTypeId = "GAMES"
-                },
-                new DiskTitle()
-                {
-                   diskTitleName = "Grand Theft Auto V",
-                   diskTypeId = "GAMES"
-                },
-
+                   diskTypeId = "GAMES",
+                   diskCode = "GM2"
+                }
             };
             return eDiskTitles;
+        }
+
+        public static List<Customer> GetCustomer()
+        {
+            List<Customer> eCustomers = new List<Customer>()
+            {
+                new Customer()
+                {
+                    customerID = Guid.NewGuid(),
+                   customerCode = "KH001",
+                   customerName = "Võ Tuấn Phương",
+                   customerAddress = "311/Bùi Thị Xuân - TP.Phan Thiết - Tỉnh Bình Thuận",
+                   customerPhone = "0984544711"
+                },
+                new Customer()
+                {
+                    customerID = Guid.NewGuid(),
+                   customerCode = "KH002",
+                   customerName = "Bùi Đức Thiện",
+                   customerAddress = "1/Ngô Quyền - TP.Cam Ranh - Tỉnh Khánh Hòa",
+                   customerPhone = "0984544711"
+                },
+                new Customer()
+                {
+                    customerID = Guid.NewGuid(),
+                   customerCode = "KH003",
+                   customerName = "Nguyễn Vĩnh Long Vinh",
+                   customerAddress = "5/Phạm Văn Đồng - Q.Thủ Đức - TP.Hồ Chí Minh",
+                   customerPhone = "0984544711"
+                },
+                new Customer()
+                {
+                    customerID = Guid.NewGuid(),
+
+                   customerName = "Phan Trọng Hinh",
+                   customerCode = "KH004",
+                   customerAddress = "1/Lê Thánh Tôn - Q.Tân Bình - TP.Hồ Chí Minh",
+                   customerPhone = "0984544711"
+                },
+            };
+            return eCustomers;
         }
 
         //Đĩa
@@ -309,42 +273,6 @@ namespace DAL
         //}
 
         //Khách hàng
-        public static List<Customer> GetCustomer()
-        {
-            List<Customer> eCustomers = new List<Customer>()
-            {
-                new Customer()
-                {
-                    customerID = Guid.NewGuid(),
-                   customerName = "Võ Tuấn Phương",
-                   customerAddress = "311/Bùi Thị Xuân - TP.Phan Thiết - Tỉnh Bình Thuận",
-                   customerPhone = "0984544711"
-                },
-                new Customer()
-                {
-                    customerID = Guid.NewGuid(),
-                   customerName = "Bùi Đức Thiện",
-                   customerAddress = "1/Ngô Quyền - TP.Cam Ranh - Tỉnh Khánh Hòa",
-                   customerPhone = "0984544711"
-                },
-                new Customer()
-                {
-                    customerID = Guid.NewGuid(),
-                   customerName = "Nguyễn Vĩnh Long Vinh",
-                   customerAddress = "5/Phạm Văn Đồng - Q.Thủ Đức - TP.Hồ Chí Minh",
-                   customerPhone = "0984544711"
-                },
-                new Customer()
-                {
-                    customerID = Guid.NewGuid(),
-
-                   customerName = "Phan Trọng Hinh",
-                   customerAddress = "1/Lê Thánh Tôn - Q.Tân Bình - TP.Hồ Chí Minh",
-                   customerPhone = "0984544711"
-                },
-            };
-            return eCustomers;
-        }
 
         //Phiếu thuê
         //public static List<eRentalBill> GetRentalBill()

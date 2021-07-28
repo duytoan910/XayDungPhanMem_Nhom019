@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Phí trễ hạn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .k-grid-content.k-auto-scrollable:not(.horizontal-row .k-grid-content) {
+        height: calc(100vh - 260px) !important;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card" style="margin: 10px 10px 5px 10px !important;">
+            <div class="card-header">
+                <form class="form-inline ml-3" style="display:block">
+                    <div class="">
+                        <select id="tbxCustomerID"  style="width:250px"></select>
+                        <button id="btnSearch" class="btn btn-info" style="margin-left: 10px;padding: 4px 12px;" type="button">
+                            <i class="fas fa-search"></i> Xem phí trễ
+                        </button>
+                        <div class="payment-block">
+                            Tổng tiền:
+                            <input id="tbxTotalMoney" type="text" class="k-textbox tc-control" readonly style="color:red;height:26px;width:100px">
+                            <button id="btnPayment" class="btn btn-danger" style="float:right; margin-left: 10px;padding: 4px 12px;" type="button">
+                                <i class="far fa-money-check-alt"></i> THANH TOÁN
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row inner-row" style="padding: 0px 8px;">
+    <div class="col-md-12">
+        <div id="grid_qlpth" class="input-group input-group-sm"></div>
+    </div>
+
+</div>
+<script>
+    setup_QLPTH();
+</script>

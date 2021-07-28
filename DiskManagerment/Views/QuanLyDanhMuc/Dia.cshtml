@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row inner-row" style="padding: 0px 8px;">
+    <div class="col-md-6" style="padding-right: 0px;">
+        <div id="grid_qlkh" class="input-group input-group-sm"></div>
+    </div>
+    <div class="col-md-6" style="padding-left: 0px;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="k-toolbar" style="display:block;height:43.28px;border-bottom:none;text-align:center;font-weight:bold;font-size:15px;line-height: 36px;">Các đĩa đang thuê</div>
+                <div id="grid_qlkh_RentalBills" class="input-group input-group-sm"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setup_QLDM_TuaDia();
+</script>

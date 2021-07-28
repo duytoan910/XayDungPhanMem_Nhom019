@@ -41,9 +41,9 @@ namespace ServicesProject.Controllers
         {
             diskTitleBLL.editDiskTitle(DiskTitle);
         }
-        public object checkTitleIfExist(string title)
+        public object chectcitleIfExist(string title)
         {
-            return JsonConvert.SerializeObject(diskTitleBLL.checkTitleIfExist(title));
+            return JsonConvert.SerializeObject(diskTitleBLL.chectcitleIfExist(title));
         }
         public object CountDisk(Guid titleID)
         {

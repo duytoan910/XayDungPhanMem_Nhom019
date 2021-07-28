@@ -79,7 +79,7 @@ namespace DAL
             db.SaveChanges();
         }
 
-        public bool checkTitleIfExist(string title)
+        public bool chectcitleIfExist(string title)
         {
             DiskTitle c = db.DiskTitles.Where(x => x.diskTitleName == title).FirstOrDefault();
 

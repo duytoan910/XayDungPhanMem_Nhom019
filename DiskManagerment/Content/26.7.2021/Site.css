@@ -1,0 +1,387 @@
+﻿* {
+    font-family: "SF Pro Display";
+}
+
+body {
+    overflow: hidden;
+}
+
+html {
+    background-color: #f4f6f9;
+}
+
+.k-grid {
+    font-size: 14px;
+}
+
+.control-sidebar.control-sidebar-dark {
+    overflow-y: auto;
+    height: calc(100vh - 37px);
+    box-shadow: 0 14px 28px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.22) !important;
+}
+
+[class*=sidebar-dark-] .nav-sidebar > .nav-item.menu-open > .nav-link {
+    font-weight: 600;
+}
+
+.nav-sidebar .menu-open > .nav-link i.right, .nav-sidebar .nav-item > .nav-link .right {
+    margin-top: 5px;
+}
+
+.nav-sidebar > .nav-item .nav-icon {
+    font-size: 15px !important;
+}
+
+[class*=sidebar-dark-] .nav-sidebar > .nav-item > .nav-treeview [class*=fa] {
+    font-size: 8px !important;
+    transform: translateY(-3px);
+    margin-left: 5px !important;
+    margin-right: -7px !important;
+}
+
+[class*=sidebar-dark-] .nav-treeview > .nav-item > .nav-link {
+    color: #c2c7d0;
+    background: #00000021;
+}
+
+.content-wrapper {
+    min-height: calc(100% - 80px) !important;
+    height: calc(100vh - 80px) !important;
+}
+
+.inner-row {
+    height: calc(100vh - 70px);
+}
+
+.k-grid {
+    height: calc(100vh - 80px);
+}
+
+#grid_qlkh_RentalBills {
+    height: calc(100vh - 123px) !important;
+}
+.modal-wrapper {
+    display: none;
+}
+.modal-wrapper *{
+    font-size: 14px;
+}
+.card * {
+    font-size: 14px;
+}
+
+.horizontal-row .row {
+    height: 50%;
+}
+
+    .horizontal-row .row:first-child {
+        padding-bottom: 5px
+    }
+
+    .horizontal-row .row:nth-child(2) {
+        padding-top: 5px
+    }
+
+.k-grid-content {
+    overflow-x: auto;
+}
+
+form.form-inline.ml-3 {
+    margin: 0px !important;
+}
+
+.tc-control {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: inline-block !important;
+}
+
+.tc-filter-option {
+    transition: all 0.3s ease 0s;
+}
+
+    .tc-filter-option .card-header {
+        border: none;
+    }
+
+.tc-kendo-control-fix {
+    display: inline-block !important;
+    /* width: 150px !important; */
+}
+
+.tc-current-page {
+    font-weight: bold;
+    background: #e4e7eb;
+    font-size: 17px;
+}
+
+.nav-item i.far {
+    font-size: 10px !important;
+    color: #c2c7d0;
+}
+
+.k-multiselect:after {
+    content: "\25bc";
+    position: absolute;
+    top: 30%;
+    right: 10px;
+    font-size: 12px;
+}
+
+.k-grid .k-grid-content a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.hide {
+    display: none !important;
+}
+
+.k-window .form-control {
+    height: 24px !important;
+    width: 200px;
+}
+
+.k-window .form-group {
+    display: inline-table !important;
+    margin-bottom: 0px !important;
+}
+
+.k-window label {
+    font-weight: 400 !important;
+    margin: 0px !important;
+}
+.k-window-title{
+    font-size:15px;
+    font-weight:bold;
+}
+.k-window-titlebar {
+    height: 35px;
+}
+.k-notification {
+    font-size: 14px;
+}
+.k-textbox.tc:not([role="spinbutton"],#select_Create_OwnerID) {
+    padding: 0px !important;
+    display: block !important;
+}
+.k-textbox:focus, .k-textbox.k-state-focus, .k-textbox.k-state-focused {
+    box-shadow: none;
+}
+
+.k-textbox:not([role="spinbutton"]):focus-within {
+    border-color: #80bdff !important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%) !important;
+}
+
+.k-textbox.tc-control {
+    padding-left: 0px;
+}
+
+    .k-textbox.tc-control:focus-within {
+        outline: 0px !important;
+        padding-left: 0px;
+    }
+
+.dropdown-toggle::after {
+    float: right;
+    margin-top: 10px;
+    margin-right: .571em;
+}
+
+.dropdown-menu {
+    padding: 5px 5px 0px 5px;
+}
+
+    .dropdown-menu input.k-textbox.tc-control {
+        display: inline-block !important;
+        width: 98px;
+        height: 28px;
+        margin: 0px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+.k-tooltip.k-slider-tooltip {
+    display: none !important;
+}
+
+.k-list-filter {
+    padding: 5px;
+    flex: none;
+}
+
+    .k-list-filter > .k-textbox {
+        height: 30px;
+        padding-left: 0px;
+    }
+
+    .k-list-filter > .k-icon {
+        right: 15px;
+    }
+
+#window_Map {
+    padding: 0px;
+    overflow: hidden;
+}
+
+.k-upload-files {
+    height: 95px !important;
+}
+
+    .k-upload-files li.k-file {
+        margin: 1px !important;
+        padding: 5px 5px 0px 5px !important;
+        float: left;
+        border-width: 1px !important;
+    }
+
+.k-widget.k-popup.k-notification.k-notification-error.k-state-border-up {
+    padding: 0px !important;
+}
+
+.k-window.k-dialog [data-role="dialog"] {
+    padding: 10px !important;
+}
+
+.k-window.k-dialog .k-datepicker {
+    height: 40px;
+    padding: 0px !important;
+    width: 100%;
+}
+
+.k-header .k-link {
+    text-align: center;
+}
+
+.k-dropdown .k-dropdown-wrap, .k-dropdowntree .k-dropdown-wrap {
+    background-color: white;
+}
+
+    .k-dropdown .k-dropdown-wrap:hover {
+        background-color: white;
+    }
+
+.tc-hide {
+    display: none !important;
+}
+
+.k-form-error {
+    display: none;
+}
+
+.k-notification-success, .k-notification-info {
+    padding: 0px !important;
+}
+
+.k-datepicker .k-picker-wrap.k-invalid:focus,
+.k-datepicker .k-picker-wrap.k-invalid.k-state-focused,
+.k-datepicker .k-picker-wrap.k-state-invalid:focus,
+.k-datepicker .k-picker-wrap.k-state-invalid.k-state-focused,
+.k-datetimepicker .k-picker-wrap.k-invalid:focus,
+.k-datetimepicker .k-picker-wrap.k-invalid.k-state-focused,
+.k-datetimepicker .k-picker-wrap.k-state-invalid:focus,
+.k-datetimepicker .k-picker-wrap.k-state-invalid.k-state-focused,
+.k-timepicker .k-picker-wrap.k-invalid:focus,
+.k-timepicker .k-picker-wrap.k-invalid.k-state-focused,
+.k-timepicker .k-picker-wrap.k-state-invalid:focus,
+.k-timepicker .k-picker-wrap.k-state-invalid.k-state-focused,
+.k-dropdown .k-dropdown-wrap.k-invalid:focus,
+.k-dropdowntree .k-dropdown-wrap.k-invalid:focus,
+.k-dropdown .k-dropdown-wrap.k-invalid.k-state-focused,
+.k-dropdowntree .k-dropdown-wrap.k-invalid.k-state-focused,
+.k-dropdown .k-dropdown-wrap.k-invalid:hover:focus,
+.k-dropdowntree .k-dropdown-wrap.k-invalid:hover:focus,
+.k-dropdown .k-dropdown-wrap.k-invalid:hover.k-state-focused,
+.k-dropdowntree .k-dropdown-wrap.k-invalid:hover.k-state-focused,
+.k-dropdown .k-dropdown-wrap.k-state-invalid:focus,
+.k-dropdowntree .k-dropdown-wrap.k-state-invalid:focus,
+.k-dropdown .k-dropdown-wrap.k-state-invalid.k-state-focused,
+.k-dropdowntree .k-dropdown-wrap.k-state-invalid.k-state-focused {
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%) !important;
+}
+
+.k-grid td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.k-radio {
+    margin-right: 5px;
+}
+
+.nav-link {
+    padding-left: 10px !important;
+}
+
+.tc-disable {
+    pointer-events: none;
+}
+.k-grid [role="gridcell"]{
+    cursor: pointer;
+}
+.k-grid .k-toolbar * {
+    font-size: 14px;
+}
+.k-grid .k-toolbar button i {
+    line-height: 21px;
+    margin-right:5px;
+}
+.k-grid-content.k-auto-scrollable{
+    overflow:scroll;
+}
+.hoverEdit td {
+    background-color: #fc9e1a8a !important;
+}
+.hoverDelete td {
+    background-color: #e8102466 !important;
+}
+[role="columnheader"][data-field="customerName"] {
+    height: 21px;
+}
+.k-toolbar.k-grid-toolbar {
+    display: block !important;
+    padding-left: 7px;  
+}
+.k-toolbar.k-grid-toolbar .k-grid-excel {
+    float:right;
+}
+.payment-block{
+    float:right;
+}
+[data-role="checkbox"] {
+    height: 15px;
+    width: 15px;
+}
+[data-role="checkbox"]::before {
+    width: 20px;
+    height: 20px;
+}
+input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
+    outline: none !important;
+}
+.menu-list-header i:not(.right) {
+    width: 30px !important;
+    margin-left: -10px !important;
+}
+.button-header {
+    width: 90%;
+    margin-left: 23px;
+}
+.selected-button {
+    background: rgb(66, 87, 96) !important;
+    color: white !important;
+}
+.selected-button i {
+    color: #00afff !important;
+}
+.form-inline label{
+    display:block;
+}
+.disk-title-info {
+    width: 240px;
+    margin: 2px 3px;
+    font-size:14px;
+}

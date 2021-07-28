@@ -12,6 +12,7 @@
                 c => new
                     {
                         customerID = c.Guid(nullable: false, identity: true),
+                        customerCode = c.String(),
                         customerName = c.String(),
                         customerAddress = c.String(),
                         customerPhone = c.String(),
@@ -42,6 +43,7 @@
                 c => new
                     {
                         diskId = c.Guid(nullable: false, identity: true),
+                        diskCode = c.String(),
                         status = c.String(),
                         dateAdd = c.DateTime(nullable: false),
                         diskTitleId = c.Guid(nullable: false),
@@ -56,6 +58,7 @@
                     {
                         diskTitleId = c.Guid(nullable: false, identity: true),
                         diskTitleName = c.String(),
+                        diskCode = c.String(),
                         diskTypeId = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.diskTitleId)
