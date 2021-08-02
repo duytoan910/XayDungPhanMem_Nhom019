@@ -10,7 +10,7 @@ html {
     background-color: #f4f6f9;
 }
 
-.k-grid {
+.k-grid, .k-widget *{
     font-size: 14px;
 }
 
@@ -90,7 +90,7 @@ form.form-inline.ml-3 {
     margin: 0px !important;
 }
 
-.tc-control {
+.tc-control:not([data-role="numerictextbox"]) {
     margin-top: 2px;
     margin-bottom: 2px;
     display: inline-block !important;
@@ -177,11 +177,11 @@ form.form-inline.ml-3 {
     box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%) !important;
 }
 
-.k-textbox.tc-control {
+.k-textbox.tc-control:not([data-role="numerictextbox"]) {
     padding-left: 0px;
 }
 
-    .k-textbox.tc-control:focus-within {
+    .k-textbox.tc-control:not([data-role="numerictextbox"]):focus-within {
         outline: 0px !important;
         padding-left: 0px;
     }
@@ -314,6 +314,10 @@ form.form-inline.ml-3 {
 
 .nav-link {
     padding-left: 10px !important;
+    cursor:pointer;
+}
+button,button * {
+    cursor: pointer;
 }
 
 .tc-disable {
@@ -366,6 +370,12 @@ input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
     width: 30px !important;
     margin-left: -10px !important;
 }
+.k-widget.k-numerictextbox{
+    height:30px !important;
+}
+.btnResetFeild{
+    margin-right:0px !important;
+}
 .button-header {
     width: 90%;
     margin-left: 23px;
@@ -384,4 +394,10 @@ input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
     width: 240px;
     margin: 2px 3px;
     font-size:14px;
+}
+.brand-text p {
+    text-align:center;
+    margin: 0px;
+    font-size: 20px;
+    font-weight:bold;
 }

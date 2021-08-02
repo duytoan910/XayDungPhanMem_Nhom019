@@ -29,9 +29,9 @@ namespace ServicesProject.Controllers
         {
             return JsonConvert.SerializeObject(DAL.getAllDisk());
         }
-        public object addDisk(Disk e)
+        public object addDisk(Disk e,int quantity)
         {
-            return JsonConvert.SerializeObject(DAL.addDisk(e));
+            return JsonConvert.SerializeObject(DAL.addDisk(e, quantity));
         }
         public object deleteDisk(Guid e)
         {

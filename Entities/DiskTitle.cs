@@ -16,7 +16,7 @@ namespace Entities
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public Guid diskTitleId { get; set; }
         public string diskTitleName { get; set; }
-        public string diskCode { get; set; }
+        public string diskTitleCode { get; set; }
 
         [ForeignKey("DiskType")]
         public string diskTypeId { get; set; }

@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace DiskManagerment.Controllers
 {
-    public class InfoLookupController : Controller
+    public class InfoLookupController : BaseController
     {
         // GET: InfoLookup
         public ActionResult Index()
         {
-            return View();
+            return LoginCheckView();
         }
     }
 }

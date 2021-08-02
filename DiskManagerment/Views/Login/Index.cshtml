@@ -10,15 +10,18 @@
     <script src="~/Content/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
     <link href="~/Content/fontawesome-pro-5.2.0-web/css/all.min.css" rel="stylesheet" />
+    <script src="~/Content/kendo_2021.1.330/js/jquery.min.js"></script>
 
     <style>
         body {
             background: #222D32;
             font-family: 'Roboto', sans-serif;
         }
-        .container .row{
+
+        .container .row {
             height: 100vh;
         }
+
         .login-box {
             height: auto;
             background: #1A2226;
@@ -135,7 +138,8 @@
         .login-text {
             text-align: left;
             padding-left: 0px;
-            color: #A2A4A4;
+            color: #ee1a1a;
+            margin-bottom: 15px
         }
 
         .loginbttm {
@@ -160,21 +164,21 @@
                         <form>
                             <div class="form-group">
                                 <label class="form-control-label">Tài khoản</label>
-                                <input type="text" class="form-control">
+                                <input type="text" id="userName" class="form-control">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom:20px;">
                                 <label class="form-control-label">Mật khẩu</label>
-                                <input type="password" class="form-control" i>
+                                <input type="password" id="userPassword" class="form-control" i>
                             </div>
 
                             <div class="col-lg-12 login-text">
 
                             </div>
-                                <div class="col-lg-12 loginbttm">
-                                    <div class="col-lg-12 login-btm login-button">
-                                        <button type="submit" class="btn btn-outline-primary">Đăng nhập</button>
-                                    </div>
+                            <div class="col-lg-12 loginbttm">
+                                <div class="col-lg-12 login-btm login-button">
+                                    <button type="submit" class="btn btn-outline-primary" id="btnLogin">Đăng nhập</button>
                                 </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -182,5 +186,29 @@
             </div>
         </div>
     </div>
+    <script>
+        $('#btnLogin').click(function (e) {
+            e.preventDefault()
+            $.ajax({
+                url: 'https://localhost:44327/Login/LoginCheck',
+                type: 'POST',
+                data: {
+                    user: $('#userName').val(),
+                    password: $('#userPassword').val()
+                },
+                success: function (result) {
+                    if (result == "success") {
+                        $('.login-text').text("")
+                        location.href = "/QuanLyKhachHang"
+                    } else {
+                        $('.login-text').text(result)
+                    }
+                },
+                error: function (jqxhr, status, errorThrown) {
+                    console.log(jqxhr)
+                }
+            })
+        })
+    </script>
 </body>
 </html>

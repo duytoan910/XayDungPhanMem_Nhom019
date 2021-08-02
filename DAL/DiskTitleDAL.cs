@@ -35,18 +35,21 @@ namespace DAL
             return db.DiskTitles.ToList();
         }
 
-        public bool addDiskTitle(DiskTitle e)
+        public string addDiskTitle(DiskTitle e)
         {
-            var s = db.DiskTypes.Where(x => x.diskName == e.DiskType.diskName).FirstOrDefault();
-
+            if(Array.Exists(db.DiskTitles.ToArray<DiskTitle>(), elem => elem.diskTitleCode == e.diskTitleCode))
+            {
+                return "Mã tựa đĩa đã tồn tại!";
+            }
             DiskTitle add = new DiskTitle();
             add.diskTitleId = e.diskTitleId;
+            add.diskTitleCode = e.diskTitleCode;
             add.diskTitleName = e.diskTitleName;
-            add.diskTypeId = s.diskTypeId;
+            add.diskTypeId = e.diskTypeId;
 
             db.DiskTitles.Add(add);
             db.SaveChanges();
-            return true;
+            return "success";
         }
 
         public bool deleteDiskTitle(Guid id)

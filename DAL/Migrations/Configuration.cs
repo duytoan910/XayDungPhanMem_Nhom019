@@ -14,13 +14,13 @@
 
         protected override void Seed(DAL.DiskContext context)
         {
-            //context.DiskTypes.AddOrUpdate(
-            //   t => t.diskTypeId, AddData.GetDiskTypes().ToArray());
-            //context.SaveChanges();
+            context.DiskTypes.AddOrUpdate(
+               t => t.diskTypeId, AddData.GetDiskTypes().ToArray());
+            context.SaveChanges();
 
-            //context.DiskTitles.AddOrUpdate(
-            //    kh => kh.diskTitleId, AddData.GetDiskTitles().ToArray());
-            //context.SaveChanges();
+            context.DiskTitles.AddOrUpdate(
+                kh => kh.diskTitleId, AddData.GetDiskTitles().ToArray());
+            context.SaveChanges();
 
             //context.Disks.AddOrUpdate(
             //    emt => emt.diskId, AddData.GetDisks().ToArray());

@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace DiskManagerment.Controllers
 {
-    public class QuanLyKhachHangController : Controller
+    public class QuanLyKhachHangController : BaseController
     {
         // GET: Customer
         public ActionResult Index()
         {
-            return View();
+            return LoginCheckView();
         }
     }
 }

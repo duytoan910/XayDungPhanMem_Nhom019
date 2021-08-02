@@ -17,7 +17,7 @@ namespace DAL
             {
                 new DiskType()
                 {
-                   diskTypeId = "GAMES",
+                   diskTypeId = "GAME",
                    diskName = "Đĩa game",
                    rentalCharge = 20000,
                    lateFee = 2000,
@@ -25,7 +25,7 @@ namespace DAL
                 },
                 new DiskType()
                 {
-                   diskTypeId = "MOVIES",
+                   diskTypeId = "MOVIE",
                    diskName = "Đĩa phim",
                    rentalCharge = 15000,
                      lateFee = 1500,
@@ -45,28 +45,28 @@ namespace DAL
                 new DiskTitle()
                 {
                    diskTitleName = "The Shawshank Redemption",
-                   diskTypeId = "MOVIES",
-                   diskCode = "MV1"
+                   diskTypeId = "MOVIE",
+                   diskTitleCode = "MV1"
                 },
                 new DiskTitle()
                 {
                    diskTitleName = "The Godfather",
-                   diskTypeId = "MOVIES",
-                   diskCode = "MV2"
+                   diskTypeId = "MOVIE",
+                   diskTitleCode = "MV2"
                 },
 
                 //Tựa game
                 new DiskTitle()
                 {
                    diskTitleName = "Call of Duty",
-                   diskTypeId = "GAMES",
-                   diskCode = "GM1"
+                   diskTypeId = "GAME",
+                   diskTitleCode = "GM1"
                 },
                 new DiskTitle()
                 {
                    diskTitleName = "Half-Life 2",
-                   diskTypeId = "GAMES",
-                   diskCode = "GM2"
+                   diskTypeId = "GAME",
+                   diskTitleCode = "GM2"
                 }
             };
             return eDiskTitles;

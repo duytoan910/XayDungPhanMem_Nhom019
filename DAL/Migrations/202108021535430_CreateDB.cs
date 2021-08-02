@@ -58,7 +58,7 @@
                     {
                         diskTitleId = c.Guid(nullable: false, identity: true),
                         diskTitleName = c.String(),
-                        diskCode = c.String(),
+                        diskTitleCode = c.String(),
                         diskTypeId = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.diskTitleId)

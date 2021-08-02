@@ -27,10 +27,13 @@
     <span id="popupNotification"></span>
 
     <div class="modal-wrapper" id="modalAddCustomer">
-        @Html.Partial("AddCustomerModal")
+        @Html.Partial("modals/AddCustomerModal")
     </div>
     <div class="modal-wrapper" id="modalAddDiskTitle">
-        @Html.Partial("AddDiskTitleModal")
+        @Html.Partial("modals/AddDiskTitleModal")
+    </div>
+    <div class="modal-wrapper" id="modalAddDisk">
+        @Html.Partial("modals/AddDiskModal")
     </div>
 
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -48,7 +51,10 @@
     <!--Menu-->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a href="#" class="brand-link">
-            <span class="brand-text font-weight-light"><strong>Quản Lý Bất Động Sản</strong></span>
+            <span class="brand-text font-weight-light">
+                <p>Quản Lý Đĩa</p>
+                <p style="font-size:12px; font-weight:normal">@ViewBag.UserPermission</p>
+            </span>
         </a>
 
         <div class="sidebar">
@@ -108,7 +114,7 @@
                             <li class="nav-item">
                                 <a href="#" class="nav-link button-header btnDiskTypeManagement">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Cấu hình tựa đĩa</p>
+                                    <p>Cấu hình loại đĩa</p>
                                 </a>
                             </li>
                         </ul>
@@ -130,14 +136,16 @@
         @RenderBody()
     </div>
     <script>
-        setTimeout(function () {
+        var interval = setInterval(function () {
             $('[data-widget="treeview"][role="menu"] *').each(function (id, item) {
                 if ($(item).attr('href') == location.pathname) {
                     $(item).addClass('selected-button')
-                    $($(item).closest('.nav-item.has-treeview').find('a')[0]).click()
+                    $(item).closest('.nav-item.has-treeview').addClass('menu-open')
+                    $(item).parent().show()
+                    clearInterval(interval)
                 }
             })
-        }, 150)
+        }, 100)
     </script>
     <script src="~/Content/js/adminlte.min.js"></script>
     <script src="~/Content/js/jquery.dataTables.min.js"></script>

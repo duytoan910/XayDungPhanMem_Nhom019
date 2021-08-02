@@ -6,12 +6,12 @@ using System.Web.Mvc;
 
 namespace DiskManagerment.Controllers
 {
-    public class QuanLyDanhMucController : Controller
+    public class QuanLyDanhMucController : BaseController
     {
         // GET: QuanLyDanhMuc
         public ActionResult Index()
         {
-            return View();
+            return LoginCheckView();
         }
         public ActionResult TuaDia()
         {
@@ -19,7 +19,7 @@ namespace DiskManagerment.Controllers
         }
         public ActionResult Dia()
         {
-            return View();
+            return LoginCheckView();
         }
     }
 }

@@ -120,6 +120,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\QuanLyDanhMucController.cs" />
     <Compile Include="Controllers\QuanLyKhachHangController.cs" />
     <Compile Include="Controllers\InfoLookupController.cs" />
@@ -4094,7 +4095,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Login\Index.cshtml" />
-    <Content Include="Views\Shared\AddCustomerModal.cshtml" />
+    <Content Include="Views\Shared\modals\AddCustomerModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4145,7 +4146,8 @@
     <Content Include="Views\QuanLyPhiTreHan\Index.cshtml" />
     <Content Include="Views\QuanLyDanhMuc\TuaDia.cshtml" />
     <Content Include="Views\QuanLyDanhMuc\Dia.cshtml" />
-    <Content Include="Views\Shared\AddDiskTitleModal.cshtml" />
+    <Content Include="Views\Shared\modals\AddDiskTitleModal.cshtml" />
+    <Content Include="Views\Shared\modals\AddDiskModal.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

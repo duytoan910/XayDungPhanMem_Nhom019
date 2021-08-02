@@ -42,6 +42,7 @@ namespace DAL
                         select new
                         {
                             ID = d.diskId,
+                            Code = d.diskCode,
                             Title = d.DiskTitle.diskTitleName,
                             Type = d.DiskTitle.DiskType.diskName,
                             Date = d.dateAdd,
@@ -57,19 +58,38 @@ namespace DAL
             return db.Disks.ToList();
         }
 
-        public Disk addDisk(Disk e)
+        public Disk addDisk(Disk e, int quantity)
         {
-            var s = db.DiskTitles.Where(x => x.diskTitleName == e.DiskTitle.diskTitleName).FirstOrDefault();
+            var _distCode = "";
 
-            Disk add = new Disk();
-            add.diskId = e.diskId;
-            add.dateAdd = e.dateAdd;
-            add.status = e.status;
-            add.diskTitleId = s.diskTitleId;
+            var diskTitle = db.DiskTitles.First(x => x.diskTitleId == e.diskTitleId);
+            var diskType = db.DiskTypes.First(x => x.diskTypeId == diskTitle.diskTypeId);
 
-            db.Disks.Add(add);
+            if (diskType.diskTypeId == "GAME")
+                _distCode += "GM_";
+            else
+                _distCode += "MV_";
+
+            Disk add;
+            for(int i=0; i< quantity; i++)
+            {
+                add = new Disk();
+                add.diskCode = _distCode + diskTitle.diskTitleCode + "_" +
+                (getNextCodeIndex(
+                    new string[]
+                    {
+                    _distCode + diskTitle.diskTitleCode + "_"
+                    }
+                ) + i);
+                add.diskId = e.diskId;
+                add.dateAdd = e.dateAdd;
+                add.status = e.status;
+                add.diskTitleId = e.diskTitleId;
+
+                db.Disks.Add(add);
+            }
             db.SaveChanges();
-            return add;
+            return new Disk();
         }
 
         public bool deleteDisk(Guid id)
@@ -122,6 +142,29 @@ namespace DAL
             if (x.status == status)
                 return true;
             return false;
+        }
+
+        public int getNextCodeIndex(string[] code)
+        {
+            string filterCode = code[0];
+            var arr = db.Disks.Where(x => x.diskCode.Contains(filterCode)).ToArray();
+            var listIndex = new List<int>();
+            for(int i=0; i< arr.Count(); i++)
+            {
+                try
+                {
+                    var str = arr[i].diskCode.Split(code, StringSplitOptions.None);
+                    listIndex.Add(int.Parse(str[1]));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            if (listIndex.ToArray().Count() == 0)
+                return 1;
+
+            return listIndex.ToArray().Max() + 1;
         }
     }
 }
