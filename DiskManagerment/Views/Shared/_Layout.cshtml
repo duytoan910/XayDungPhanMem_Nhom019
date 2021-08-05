@@ -35,6 +35,9 @@
     <div class="modal-wrapper" id="modalAddDisk">
         @Html.Partial("modals/AddDiskModal")
     </div>
+    <div class="modal-wrapper" id="modalConfigDiskType">
+        @Html.Partial("modals/ConfigDiskTypeModal")
+    </div>
 
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <ul class="navbar-nav">
@@ -61,6 +64,36 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!--Các chức năng quản lý-->
+                    <li class="nav-item has-treeview">
+                        <a href="/QuanLyThueDia/LapPhieuThue" class="nav-link menu-list-header">
+                            <i class="nav-icon fal fa-calendar-times"></i>
+                            <p>
+                                Lập phiếu thuê
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview menu-list-header">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fal fa-users"></i>
+                            <p>
+                                Quản lý thuê đĩa<i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/QuanLyThueDia/TraDia" class="nav-link btn_Menu_AddCustomer button-header">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Trả đĩa</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/QuanLyThueDia/DatDia" class="nav-link button-header">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Đặt đĩa</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="nav-item has-treeview menu-list-header">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fal fa-users"></i>

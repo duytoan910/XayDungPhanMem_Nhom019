@@ -1,13 +1,17 @@
 ﻿var urlAPI = 'http://localhost:3000/api'
-var popupNotification,
+var diskTypeVarible,
+    popupNotification,
     modalAddCustomer,
     modalAddDiskTitle,
     modalAddDisk,
+    modalConfigDiskType,
     validatorAddDiskTitle,
     validatorAddDisk,
+    validatorConfigDiskType,
     validatorAddCustomer
 
 $(document).on('ready', function () {
+
     popupNotification = $("#popupNotification").kendoNotification().data("kendoNotification");
     modalAddCustomer = $("#modalAddCustomer").kendoWindow({
         visible: false,
@@ -188,11 +192,104 @@ $(document).on('ready', function () {
             })
         }
     }).data("kendoWindow");
+    modalConfigDiskType = $("#modalConfigDiskType").kendoWindow({
+        visible: false,
+        height: 200,
+        width: 375,
+        resizeable: false,
+        draggable: false,
+        modal: true,
+        title: "Thêm đĩa",
+        open: function (e) {
+            validatorConfigDiskType = $("#formConfigDiskType").kendoValidator().data('kendoValidator');
+            $('#tbx_Config_Type').kendoDropDownList({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: urlAPI + "/DiskType/getAllDiskType",
+                            dataType: "json"
+                        }
+                    },
+                    change: function (e) {
+                        diskTypeVarible = this.data();
+                    }
+                },
+                width: 300,
+                value: "Chọn loại đĩa",
+                optionLabel: "Chọn loại đĩa",
+                dataTextField: "diskName",
+                dataValueField: "diskTypeId",
+                template: '#:diskTypeId# - #:diskName#',
+                select: function (e) {
+                    var item = e.dataItem
+                    $("#tbx_Config_Charge").getKendoNumericTextBox().value(item.rentalCharge)
+                    $("#tbx_Config_HireDay").getKendoNumericTextBox().value(item.rentalPeriod)
+                    $("#tbx_Config_LateFee").getKendoNumericTextBox().value(item.lateFee)
+                }
+            })
+
+            if (!$("#tbx_Config_HireDay").getKendoNumericTextBox()) {
+                $("#tbx_Config_HireDay").kendoNumericTextBox({
+                    spinners: true,
+                    format: "# ngày",
+                    min: 1
+                });
+                $("#tbx_Config_Charge").kendoNumericTextBox({
+                    spinners: true,
+                    format: "#,### VND", step: 1000, min: 1000
+                });
+                $("#tbx_Config_LateFee").kendoNumericTextBox({
+                    spinners: true,
+                    format: "#,### VND", step: 1000, min: 1000
+                });
+            }
+
+            $('#formConfigDiskType .btnSaveOrUpdate').unbind('click')
+            $("#formConfigDiskType .btnSaveOrUpdate").bind('click', function (e) {
+                e.preventDefault();
+                if (validatorConfigDiskType.validate()) {
+                    if (!$("#tbx_Config_HireDay").getKendoNumericTextBox().value() ||
+                        !$("#tbx_Config_Charge").getKendoNumericTextBox().value() ||
+                        !$("#tbx_Config_LateFee").getKendoNumericTextBox().value()
+                    ) {
+                        noti("Vui lòng nhập đầy đủ thông tin!", "error")
+                        return
+                    }
+                    
+                    $.ajax({
+                        url: urlAPI + '/DiskType/editDiskType',
+                        dataType: "json",
+                        type: 'post',
+                        data: {
+                            diskTypeId: $('#tbx_Config_Type').getKendoDropDownList().value(),
+                            rentalCharge: $("#tbx_Config_Charge").getKendoNumericTextBox().value(),
+                            lateFee: $("#tbx_Config_LateFee").getKendoNumericTextBox().value(),
+                            rentalPeriod: $("#tbx_Config_HireDay").getKendoNumericTextBox().value(),
+                        },
+                        complete: function (result) {
+                            noti("Thao tác thành công!", "success")
+                        }
+                    })
+                } else {
+                    noti("Vui lòng nhập đầy đủ thông tin!", "error")
+                }
+            })
+            $("#formConfigDiskType .btnResetFeild").bind('click', function (e) {
+                e.preventDefault();
+                resetWindow("formConfigDiskType", validatorConfigDiskType)
+            })
+        }
+    }).data("kendoWindow");
 
     //click
     $('.btn_Menu_AddCustomer').unbind('click')
     $(document).on('click', '.btn_Menu_AddCustomer', function () {
         modalAddCustomer.center().open();
+    })
+
+    $('.btnDiskTypeManagement').unbind('click')
+    $(document).on('click', '.btnDiskTypeManagement', function () {
+        modalConfigDiskType.center().open();
     })
 
     $('.btn_Menu_Logout').unbind('click')
@@ -503,7 +600,7 @@ var setup_QLPTH = function () {
     })
 
     $("#tbxTotalMoney").kendoNumericTextBox({
-        format: "#,### VND",
+        format: "#,### VND", step: 1000, min: 1000,
         spinners: false
     });
 
@@ -886,6 +983,223 @@ var setup_QLDM_Dia = function () {
             field: "Charge",
             title: "Phí phạt",
             width: 150,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }],
+        change: function (e) {
+            var rows = e.sender.select();
+            rows.each(function (e) {
+                var dataItem = grid_qldm_dia.dataItem(this);
+            })
+        }
+    }).data('kendoGrid');
+}
+
+var setup_QLTD_LPT = function () {
+    var record = 0, grid_qltd_lapphieuthue_dsdia, grid_qltd_lapphieuthue_dshoadon;
+
+    $("#tbxTotalMoney").kendoNumericTextBox({
+        format: "#,### VND", step: 1000, min: 1000,
+        spinners: false
+    });
+
+    grid_qltd_lapphieuthue_dsdia = $("#grid_qltd_lapphieuthue_dsdia").kendoGrid({
+        dataSource: {
+            transport: {
+                read: {
+                    url: urlAPI + "/Disk/getAllDiskForLoadOnShelf",
+                    dataType: "json"
+                }
+            },
+            pageSize: 20
+        },
+        resizeable: true,
+        scrollable: true,
+        pageable: true,
+        resizable: true,
+        sortable: true,
+        navigatable: true,
+        width: 'auto',
+        selectable: "row",
+        noRecords: {
+            template: "<span style='margin: 0 auto;line-height: 50px;'>Không có dữ liệu!</span>"
+        },
+        filterable: {
+            mode: "row"
+        },
+        dataBound: function () {
+            record = 0
+
+            //click
+            $('#btnAddDisk').unbind('click')
+            $(document).on('click', '#btnAddDisk', function () {
+                modalAddDisk.center().open();
+            })
+
+            //hover
+            $('#btnUpdateDisk,#btnUpdateDisk *').on('mouseover', function () {
+                $('[role="row"].k-state-selected').addClass('hoverEdit')
+            }).on('mouseout', function () {
+                $('[role="row"].k-state-selected').removeClass('hoverEdit')
+            })
+
+            $('#btnDeleteDisk,#btnDeleteDisk *').on('mouseover', function () {
+                $('[role="row"].k-state-selected').addClass('hoverDelete')
+            }).on('mouseout', function () {
+                $('[role="row"].k-state-selected').removeClass('hoverDelete')
+            })
+        },
+        columns: [{
+            template: function () {
+                return ++record;
+            },
+            width: 50,
+            title: "STT",
+            lockable: false,
+            attributes: {
+                style: "text-align: center"
+            }
+        }, {
+            field: "Code",
+            title: "Mã đĩa",
+            width: 100,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Title",
+            title: "Tên tựa đĩa",
+            width: 250,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Type",
+            title: "Thể loại",
+            width: 150,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Date",
+            title: "Ngày nhập",
+            width: 150,
+            template: function (e) {
+                return moment(e.Date).format('HH:mm - DD/MM/YYYY')
+            },
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Status",
+            title: "Trạng thái",
+            width: 150,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Charge",
+            title: "Phí thuê",
+            width: 150,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }],
+        change: function (e) {
+            var rows = e.sender.select();
+            rows.each(function (e) {
+                var dataItem = grid_qldm_dia.dataItem(this);
+            })
+        }
+    }).data('kendoGrid');
+
+    grid_qltd_lapphieuthue_dshoadon = $("#grid_qltd_lapphieuthue_dshoadon").kendoGrid({
+        resizeable: true,
+        scrollable: true,
+        resizable: true,
+        sortable: true,
+        navigatable: true,
+        width: 'auto',
+        height: 'calc(100% - 100px)',
+        selectable: "row",
+        dataBound: function () {
+            record = 0
+
+            //click
+            $('#btnAddDisk').unbind('click')
+            $(document).on('click', '#btnAddDisk', function () {
+                modalAddDisk.center().open();
+            })
+
+            //hover
+            $('#btnUpdateDisk,#btnUpdateDisk *').on('mouseover', function () {
+                $('[role="row"].k-state-selected').addClass('hoverEdit')
+            }).on('mouseout', function () {
+                $('[role="row"].k-state-selected').removeClass('hoverEdit')
+            })
+
+            $('#btnDeleteDisk,#btnDeleteDisk *').on('mouseover', function () {
+                $('[role="row"].k-state-selected').addClass('hoverDelete')
+            }).on('mouseout', function () {
+                $('[role="row"].k-state-selected').removeClass('hoverDelete')
+            })
+        },
+        columns: [{
+            template: function () {
+                return ++record;
+            },
+            width: 50,
+            title: "STT",
+            lockable: false,
+            attributes: {
+                style: "text-align: center"
+            }
+        }, {
+            field: "Code",
+            title: "Mã đĩa",
+            width: 100,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Title",
+            title: "Tên tựa đĩa",
+            width: 250,
+            filterable: {
+                cell: {
+                    operator: "contains",
+                    suggestionOperator: "contains"
+                }
+            }
+        }, {
+            field: "Charge",
+            title: "Phí thuê",
+            width: 100,
             filterable: {
                 cell: {
                     operator: "contains",

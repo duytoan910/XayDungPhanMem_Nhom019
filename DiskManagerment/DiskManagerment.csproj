@@ -126,6 +126,7 @@
     <Compile Include="Controllers\InfoLookupController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\QuanLyPhiTreHanController.cs" />
+    <Compile Include="Controllers\QuanLyThueDiaController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -4148,6 +4149,10 @@
     <Content Include="Views\QuanLyDanhMuc\Dia.cshtml" />
     <Content Include="Views\Shared\modals\AddDiskTitleModal.cshtml" />
     <Content Include="Views\Shared\modals\AddDiskModal.cshtml" />
+    <Content Include="Views\Shared\modals\ConfigDiskTypeModal.cshtml" />
+    <Content Include="Views\QuanLyThueDia\LapPhieuThue.cshtml" />
+    <Content Include="Views\QuanLyThueDia\TraDia.cshtml" />
+    <Content Include="Views\QuanLyThueDia\DatDia.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
