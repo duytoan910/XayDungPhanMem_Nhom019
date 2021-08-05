@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "LapPhieuThue";
+    ViewBag.Title = "Lập phiếu thuê";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
@@ -31,12 +31,45 @@
         height: 50%;
         width: 100%;
     }
-
-    #tbxChooseCustomer {
+    [aria-owns="tbxChooseCustomer_listbox"]{
+        width: 200px;
         float: right;
-        height: 30px;
+    }
+    .k-animation-container * {
+        font-size: 14px;
+    }
+    #tbxTotalMoney {
+        float: right;
+        color: red;
+        height: 26px;
         width: 150px;
-        line-height: 30px;
+        pointer-events: none;
+    }
+    #showCustomerLateCharge {
+        padding: 4px 12px;
+        float: right;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: -2px;
+    }
+    .inner-row-custom .k-widget.k-numerictextbox {
+        float: right;
+        width: 242px;   
+    }
+    .k-callout-s {
+        bottom: 0 !important;
+    }
+    .k-tooltip {
+        background-color: #0000009e;
+    }
+    .noti-alert {
+        position: absolute;
+        z-index: 9999;
+        color: red;
+        font-size: 20px;
+        right: 3px;
+    }
+    .k-tooltip-content{
+        text-align:center;
     }
 </style>
 <div class="row">
@@ -49,13 +82,17 @@
                 <div style="display:inline-block" class="inner-row-custom">
                     <div>
                         Tổng tiền:
-                        <input id="tbxTotalMoney" type="text" class="" readonly style="float: right;color:red; height: 26px; width: 150px; pointer-events: none">
+                        <input id="tbxTotalMoney" type="text" class="" readonly>
                     </div>
                 </div>
-                <div style="display:inline-block" class="inner-row-custom">
+                <div style="display:inline-block;transform: translateY(10px)" class="inner-row-custom">
                     <div>
                         Khách hàng:
-                        <input id="tbxChooseCustomer" type="text" class="k-textbox">
+                        <select id="tbxChooseCustomer"></select>
+                        <button id="showCustomerLateCharge" class="k-button btn btn-default" title="Khách hàng có phí trễ hạn chưa thanh toán!">
+                            <i class="far fa-money-check"></i>
+                            <i class="noti-alert hide fas fa-exclamation"></i>
+                        </button>
                     </div>
                 </div>
             </div>

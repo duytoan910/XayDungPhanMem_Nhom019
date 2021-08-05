@@ -1000,12 +1000,100 @@ var setup_QLDM_Dia = function () {
 }
 
 var setup_QLTD_LPT = function () {
-    var record = 0, grid_qltd_lapphieuthue_dsdia, grid_qltd_lapphieuthue_dshoadon;
+    var record = 0, blockTooltip = true, ddl_ChooseCustomer, tooltip_latecharge, grid_qltd_lapphieuthue_dsdia, grid_qltd_lapphieuthue_dshoadon;
 
     $("#tbxTotalMoney").kendoNumericTextBox({
         format: "#,### VND", step: 1000, min: 1000,
         spinners: false
     });
+
+    tooltip_latecharge = $("#showCustomerLateCharge").kendoTooltip({
+        width: 120,
+        position: "top",
+        show: function (e) {
+            if (blockTooltip) {
+                $('#showCustomerLateCharge_tt_active').parent().addClass('hide')
+            } else {
+                $('#showCustomerLateCharge_tt_active').parent().removeClass('hide')
+            }
+        }
+    }).data("kendoTooltip");
+
+    ddl_ChooseCustomer = $('#tbxChooseCustomer').kendoDropDownList({
+        dataSource: {
+            transport: {
+                read: {
+                    url: urlAPI + "/Customer/getCustomer",
+                    dataType: "json"
+                }
+            }
+        },
+        width: 200,
+        value: "Chọn khách hàng",
+        optionLabel: "Chọn khách hàng",
+        dataTextField: "customerName",
+        dataValueField: "customerID",
+        filter: "contains",
+        template: '#:customerCode# - #:customerName#',
+        filtering: function (e) {
+            // ignore space
+            var filterValue = e.sender._prev;
+            if (filterValue.trim) filterValue = filterValue.trim();
+            this.dataSource.filter({
+                logic: "or",
+                filters: [
+                    {
+                        field: "customerCode",
+                        operator: "contains",
+                        value: filterValue
+                    },
+                    {
+                        field: "customerName",
+                        operator: "contains",
+                        value: filterValue
+                    }
+                ]
+            });
+
+            // important: stop default filter
+            e.preventDefault();
+        },
+        select: function (e) {
+            var dataSeletect = e.dataItem
+
+            if (!dataSeletect.customerID) {
+                $('.noti-alert').addClass('hide')
+                blockTooltip = true
+                return
+            }
+
+            $.ajax({
+                url: urlAPI + '/LateCharge/getLateChargeByIDCus',
+                dataType: "json",
+                type: 'post',
+                data: {
+                    id: dataSeletect.customerID
+                },
+                success: function (result) {
+                    if (result.length == 0) {
+                        $('.noti-alert').removeClass('hide')
+                        blockTooltip = false
+
+                        var interval = setInterval(function () {
+                            if ($('#showCustomerLateCharge').getKendoTooltip().content) {
+                                $($('#showCustomerLateCharge').getKendoTooltip().content[0]).text("Khách hàng có " + result.length + " phí trễ hạn chưa thanh toán!")
+                                $('#showCustomerLateCharge').getKendoTooltip().show()
+                                clearInterval(interval)
+                            }
+                        }, 50)
+                    } else {
+                        $('.noti-alert').addClass('hide')
+                        blockTooltip = true
+                    }
+                }
+            })
+        }
+    })
 
     grid_qltd_lapphieuthue_dsdia = $("#grid_qltd_lapphieuthue_dsdia").kendoGrid({
         dataSource: {
