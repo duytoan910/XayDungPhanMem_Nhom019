@@ -1226,8 +1226,9 @@ var setup_QLTD_LPT = function () {
                 grid_qltd_lapphieuthue_dshoadon.dataSource.add(
                     grid_qltd_lapphieuthue_dsdia.dataSource.get(item)
                 )
-                sum += grid_qltd_lapphieuthue_dsdia.dataSource.get(item).
+                sum += grid_qltd_lapphieuthue_dsdia.dataSource.get(item).Charge
             })
+            $('#tbxTotalMoney').getKendoNumericTextBox().value(sum)
         }
     }).data('kendoGrid');
 
