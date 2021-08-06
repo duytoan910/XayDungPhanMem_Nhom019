@@ -328,6 +328,13 @@ $(window).on("resize", function () {
     kendo.resize($(".k-grid"));
 });
 
+function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 function noti(content, type = "error") {
     popupNotification.show(content, type);
 }
@@ -1075,7 +1082,7 @@ var setup_QLTD_LPT = function () {
                     id: dataSeletect.customerID
                 },
                 success: function (result) {
-                    if (result.length == 0) {
+                    if (result.length > 0) {
                         $('.noti-alert').removeClass('hide')
                         blockTooltip = false
 
@@ -1103,6 +1110,11 @@ var setup_QLTD_LPT = function () {
                     dataType: "json"
                 }
             },
+            schema: {
+                model: {
+                    id: "ID"
+                }
+            },
             pageSize: 20
         },
         resizeable: true,
@@ -1111,8 +1123,8 @@ var setup_QLTD_LPT = function () {
         resizable: true,
         sortable: true,
         navigatable: true,
+        persistSelection: true,
         width: 'auto',
-        selectable: "row",
         noRecords: {
             template: "<span style='margin: 0 auto;line-height: 50px;'>Không có dữ liệu!</span>"
         },
@@ -1141,17 +1153,8 @@ var setup_QLTD_LPT = function () {
                 $('[role="row"].k-state-selected').removeClass('hoverDelete')
             })
         },
-        columns: [{
-            template: function () {
-                return ++record;
-            },
-            width: 50,
-            title: "STT",
-            lockable: false,
-            attributes: {
-                style: "text-align: center"
-            }
-        }, {
+        columns: [
+            { selectable: true, width: "40px" }, {
             field: "Code",
             title: "Mã đĩa",
             width: 100,
@@ -1214,11 +1217,16 @@ var setup_QLTD_LPT = function () {
                     suggestionOperator: "contains"
                 }
             }
-        }],
+            }
+        ],
         change: function (e) {
-            var rows = e.sender.select();
-            rows.each(function (e) {
-                var dataItem = grid_qldm_dia.dataItem(this);
+            var sum = 0;
+            grid_qltd_lapphieuthue_dshoadon.dataSource.data([])
+            this.selectedKeyNames().forEach(function (item) {
+                grid_qltd_lapphieuthue_dshoadon.dataSource.add(
+                    grid_qltd_lapphieuthue_dsdia.dataSource.get(item)
+                )
+                sum += grid_qltd_lapphieuthue_dsdia.dataSource.get(item).
             })
         }
     }).data('kendoGrid');
@@ -1296,10 +1304,94 @@ var setup_QLTD_LPT = function () {
             }
         }],
         change: function (e) {
+        }
+    }).data('kendoGrid');
+}
+
+function setup_QLTD_TraDia() {
+    var grid_qltd_TraDia;
+
+    grid_qltd_TraDia = $("#grid_qltd_TraDia").kendoGrid({
+        resizeable: true,
+        scrollable: true,
+        resizable: true,
+        sortable: true,
+        navigatable: true,
+        width: 'auto',
+        selectable: "row",
+        toolbar: [
+            {
+                template:
+                    '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+            },
+            //"excel"
+        ],
+        excel: {
+            allPages: true,
+            fileName: "DanhSachKhachHang-(" + moment().format("DD-MM-YYYY") + ")",
+            filterable: true
+        },
+        noRecords: {
+            template: "<span style='margin: 0 auto;line-height: 50px;'>Không có dữ liệu!</span>"
+        },
+        filterable: {
+            mode: "row"
+        },
+        change: function (e) {
+            var total = 0, totalArr = []
             var rows = e.sender.select();
             rows.each(function (e) {
-                var dataItem = grid_qldm_dia.dataItem(this);
+                var dataItem = this.dataItem(this);
+                totalArr.push(dataItem)
             })
-        }
+
+            totalArr.forEach(function (item) {
+                total += item.lateFee
+            })
+            $('#tbxTotalMoney').val(total)
+        },
+        dataBound: function (e) {
+            //click
+            $('#btnDeleteLateCharge').unbind('click')
+            $(document).on('click', '#btnDeleteLateCharge', function () {
+
+            })
+
+            //hover
+            $('#btnUpdateCustomer,#btnUpdateCustomer *').on('mouseover', function () {
+                $('[role="row"].k-state-selected').addClass('hoverEdit')
+            }).on('mouseout', function () {
+                $('[role="row"].k-state-selected').removeClass('hoverEdit')
+            })
+        },
+        columns: [
+            {
+                selectable: true, width: "50px"
+            }, {
+                field: "customerCode",
+                title: "Đĩa đã thuê",
+            }, {
+                field: "customerName",
+                title: "Hạn trả",
+                format: "{0:MM/dd/yyyy}"
+            }, {
+                field: "customerPhone",
+                title: "Ngày trả",
+                format: "{0:MM/dd/yyyy}"
+            }, {
+                field: "customerAddress",
+                title: "Phí phạt",
+                format: "#,### VND"
+            }, {
+                field: "customerAddress",
+                title: "Trạng thái",
+                template: function (e) {
+                    if (e.status == "True") {
+                        return '<button class="btn btn-outline-success" disabled>Đã thanh toán</button>'
+                    } else {
+                        return '<button class="btn btn-outline-danger" disabled>Chưa thanh toán</button>'
+                    }
+                }
+            }]
     }).data('kendoGrid');
 }
