@@ -2,6 +2,7 @@
 var diskTypeVarible,
     popupNotification,
     modalAddCustomer,
+    modalAddCustomer_IsEdit = false,
     modalAddDiskTitle,
     modalAddDisk,
     modalConfigDiskType,
@@ -26,23 +27,45 @@ $(document).on('ready', function () {
             $("#modalAddCustomer .btnSaveOrUpdate").bind('click', function (e) {
                 e.preventDefault();
                 if (validatorAddCustomer.validate()) {
-                    $.ajax({
-                        url: urlAPI + '/Customer/addCustomer',
-                        dataType: "json",
-                        type: 'post',
-                        data: {
-                            customerName: $('#tbx_Create_CustomerName').val(),
-                            customerAddress: $('#tbx_Create_Address').val(),
-                            customerPhone: $('#tbx_Create_Phone').val()
-                        },
-                        success: function (result) {
-                            noti("Thao tác thành công!", "success")
-                            refreshGird('#grid_qlkh')
-                            modalAddCustomer.close()
-                            $('#tbxCustomerID').getKendoDropDownList().dataSource.read()
-                            $("#modalAddCustomer .btnResetFeild").click();
-                        }
-                    })
+                    if (!modalAddCustomer_IsEdit) {
+                        $.ajax({
+                            url: urlAPI + '/Customer/addCustomer',
+                            dataType: "json",
+                            type: 'post',
+                            data: {
+                                customerName: $('#tbx_Create_CustomerName').val(),
+                                customerAddress: $('#tbx_Create_Address').val(),
+                                customerPhone: $('#tbx_Create_Phone').val()
+                            },
+                            complete: function (result) {
+                                noti("Thao tác thành công!", "success")
+                                refreshGird('#grid_qlkh')
+                                modalAddCustomer.close()
+                                $('#tbxCustomerID').getKendoDropDownList().dataSource.read()
+                                $("#modalAddCustomer .btnResetFeild").click();
+                            }
+                        })
+                    } else {
+                        var grid_qlkh = $("#grid_qlkh").getKendoGrid()
+                        $.ajax({
+                            url: urlAPI + '/Customer/editCustomer',
+                            dataType: "json",
+                            type: 'post',
+                            data: {
+                                customerID: grid_qlkh.dataItem(grid_qlkh.select()).customerID,
+                                customerName: $('#tbx_Create_CustomerName').val(),
+                                customerAddress: $('#tbx_Create_Address').val(),
+                                customerPhone: $('#tbx_Create_Phone').val()
+                            },
+                            complete: function (result) {
+                                noti("Thao tác thành công!", "success")
+                                refreshGird('#grid_qlkh')
+                                modalAddCustomer.close()
+                                $('#tbxCustomerID').getKendoDropDownList().dataSource.read()
+                                $("#modalAddCustomer .btnResetFeild").click();
+                            }
+                        })
+                    }
                 } else {
                     noti("Vui lòng nhập đầy đủ thông tin!", "error")
                 }
@@ -405,7 +428,85 @@ var setup_QLKH = function () {
             //click
             $('#btnAddCustomer').unbind('click')
             $(document).on('click', '#btnAddCustomer', function () {
+                modalAddCustomer_IsEdit = false;
                 modalAddCustomer.center().open();
+            })
+            $('#btnUpdateCustomer').unbind('click')
+            $(document).on('click', '#btnUpdateCustomer', function () {
+                var sltID = grid_qlkh.dataItem(grid_qlkh.select())
+                modalAddCustomer_IsEdit = true;
+
+                if (!sltID) {
+                    noti("Vui lòng chọn một khách hàng!","warning")
+                    return
+                }
+
+                $.ajax({
+                    url: urlAPI + '/Customer/findCustomer',
+                    dataType: "json",
+                    type: 'post',
+                    data: {
+                        id: sltID.customerID
+                    },
+                    success: function (result) {
+                        $('#tbx_Create_CustomerName').val(result.customerName)
+                        $('#tbx_Create_Phone').val(result.customerPhone)
+                        $('#tbx_Create_Address').val(result.customerAddress)
+
+                        modalAddCustomer.center().open();
+                    }
+                })
+            })
+
+            $('#btnDeleteCustomer').unbind('click')
+
+            $(document).on('click', '#btnDeleteCustomer', function () {
+                var sltID = grid_qlkh.dataItem(grid_qlkh.select())
+                modalAddCustomer_IsEdit = true;
+
+                if (!sltID) {
+                    noti("Vui lòng chọn một khách hàng!", "warning")
+                    return
+                }
+
+                $("#dialog").kendoDialog({
+                    width: 220,
+                    height: 120,
+                    title: "Thông báo",
+                    closable: true,
+                    modal: true,
+                    content: `Bạn có muốn xóa khách hàng này?`,
+                    actions: [{
+                        text: 'Không'
+                    },
+                    {
+                        text: 'Có',
+                        primary: true,
+                        action: function () {
+                            $.ajax({
+                                url: urlAPI + '/Customer/deleteCustomer',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    id: sltID.customerID
+                                },
+                                success: function (result) {
+                                    noti("Thao tác thành công!", "success")
+                                    grid_qlkh.dataSource.read()
+                                }
+                            })
+                        }
+                    }
+                    ],
+                    animation: {
+                        open: {
+                            effects: "fade:in"
+                        },
+                        close: {
+                            effects: "fade:out"
+                        }
+                    }
+                }).data("kendoDialog").open();
             })
 
             //hover
