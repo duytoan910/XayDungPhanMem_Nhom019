@@ -67,7 +67,7 @@ namespace DAL
                 y.id = x.ID;
                 y.diskRent = x.DiskRent;
                 y.hireDate = x.HireDate;
-                y.payDate = x.PayDate;
+                y.payDate = (DateTime) x.PayDate;
                 y.fee = x.Fee;
                 y.status = x.Status;
                 y.rentalBillid = x.RentalBillid;
@@ -101,7 +101,7 @@ namespace DAL
                 y.id = x.ID;
                 y.diskRent = x.DiskRent;
                 y.hireDate = x.HireDate;
-                y.payDate = x.PayDate;
+                y.payDate = (DateTime) x.PayDate;
                 y.fee = x.Fee;
                 y.status = x.Status;
                 y.rentalBillid = x.RentalBillid;

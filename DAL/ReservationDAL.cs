@@ -32,6 +32,7 @@ namespace DAL
                         select new
                         {
                             CusID = x.customerID,
+                            Code = x.Customer.customerCode,
                             CusName = x.Customer.customerName,
                             DateOrder = x.dateOrder,
                             ReID = x.id,

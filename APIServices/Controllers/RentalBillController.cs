@@ -35,6 +35,14 @@ namespace ServicesProject.Controllers
         {
             return JsonConvert.SerializeObject(lcDAL.getOverdueRentalBillByID(cusID));
         }
+        public object getAllLateChargeByIDCus(Guid id)
+        {
+            return JsonConvert.SerializeObject(lcDAL.getAllLateChargeByIDCus(id));
+        }
+        public object getLateChargeByIDCus(Guid id)
+        {
+            return JsonConvert.SerializeObject(lcDAL.getLateChargeByIDCus(id));
+        }
         public void addRentalBill(RentalBill e)
         {
             lcDAL.addRentalBill(e);

@@ -19,7 +19,8 @@ namespace ServicesProject.Controllers
         }
         public JsonResult getCustomer()
         {
-            return Json(cusDAL.getCustomer(), JsonRequestBehavior.AllowGet);
+            var asd = cusDAL.getCustomer();
+            return Json(asd, JsonRequestBehavior.AllowGet);
         }
         public JsonResult getCustomerByOverdueDisk()
         {

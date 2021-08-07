@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,14 +19,18 @@ namespace Entities
 
         [ForeignKey("DiskTitle")]
         public Guid diskTitleId { get; set; }
-        public virtual DiskTitle DiskTitle { get; set; }
 
         [ForeignKey("Customer")]
         public Guid customerID { get; set; }
-        public virtual Customer Customer { get; set; }
 
         [ForeignKey("Disk")]
         public Guid? diskId { get; set; }
+
+        [JsonIgnore]
+        public virtual DiskTitle DiskTitle { get; set; }
+        [JsonIgnore]
+        public virtual Customer Customer { get; set; }
+        [JsonIgnore]
         public virtual Disk Disk { get; set; }
     }
 }
