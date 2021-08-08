@@ -3,6 +3,107 @@
     ViewBag.Title = "Đặt đĩa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .border-right {
+        border-right: 1px solid rgba(33,37,41,0.125);
+        padding-right: 0px;
+    }
 
-<h2>DatDia</h2>
+        .border-right .k-grid {
+            border-right: none;
+        }
 
+    .border-left {
+        padding-left: 0px;
+    }
+
+        .border-left .k-grid {
+            border-left: none;
+        }
+
+    .payment-block {
+        height: 50px;
+        float: unset;
+        padding: 10px;
+    }
+
+    .inner-row-custom {
+        height: 50%;
+        width: 100%;
+    }
+
+    [aria-owns="tbxChooseCustomer_listbox"] {
+        width: 200px;
+        float: right;
+    }
+
+    .k-animation-container * {
+        font-size: 14px;
+    }
+
+    #tbxTotalMoney {
+        float: right;
+        color: red;
+        height: 26px;
+        width: 150px;
+        pointer-events: none;
+    }
+
+    #showCustomerLateCharge {
+        padding: 4px 12px;
+        float: right;
+        border-radius: 4px 0px 0px 4px;
+        margin-right: -2px;
+    }
+
+    .inner-row-custom .k-widget.k-numerictextbox {
+        float: right;
+        width: 242px;
+    }
+
+    .k-callout-s {
+        bottom: 0 !important;
+    }
+
+    .k-tooltip {
+        background-color: #0000009e;
+    }
+
+    .noti-alert {
+        position: absolute;
+        z-index: 9999;
+        color: red;
+        font-size: 20px;
+        right: 3px;
+    }
+
+    .k-tooltip-content {
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <div class="col-md-5 border-right">
+        <div id="grid_qltd_datdia_dstuadia" class="input-group input-group-sm"></div>
+    </div>
+    <div class="col-md-7 border-left">
+        <div class="payment-block">
+            <div class="col-md-9" style="height: 100%;">
+                <div style="display:inline-block" class="inner-row-custom">
+                    <div>
+                        Khách hàng:
+                        <select id="tbxChooseCustomer"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button id="btnSet" class="btn btn-danger" style="float:right;" type="button">
+                    <i class="far fa-money-check-alt"></i> Đặt trước
+                </button>
+            </div>
+        </div>
+        <div id="grid_qltd_datdia_dskh" class="input-group input-group-sm"></div>
+    </div>
+</div>
+<script>
+    setup_QLTD_DatDia();
+</script>

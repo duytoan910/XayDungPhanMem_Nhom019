@@ -24,6 +24,7 @@ namespace DAL
                             select new
                             {
                                 ID = m.diskTitleId,
+                                Code = m.diskTitleCode,
                                 Name = m.diskTitleName,
                                 NameType = m.DiskType.diskName,
                             }).ToList();

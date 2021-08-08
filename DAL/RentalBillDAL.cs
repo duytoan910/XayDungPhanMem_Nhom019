@@ -49,7 +49,7 @@ namespace DAL
                         where c.Disk.status == "Cho thuê" && c.hireDate == c.payDate && c.customerID == cusID
                         select new
                         {
-                            ID = c.Disk.diskId,
+                            ID = c.Disk.diskCode,
                             DiskName = c.Disk.DiskTitle.diskTitleName,
                             HireDate = c.hireDate,
                             PaymentTerm = c.paymentTerm,
@@ -74,6 +74,41 @@ namespace DAL
             return list;
         }
 
+        //Lấy danh sách phí phạt với chi tiết phiếu thuê
+        public IList getLateChargeByIDCus(Guid id)
+        {
+            var listCharge = (from c in db.LateCharges
+                              where c.RentalBill.customerID == id && c.status == false
+                              select new
+                              {
+                                  ID = c.lateChargeId,
+                                  DiskRent = c.RentalBill.Disk.DiskTitle.diskTitleName,
+                                  HireDate = c.RentalBill.hireDate,
+                                  PayDate = c.RentalBill.payDate,
+                                  Fee = c.lateFee,
+                                  Status = c.status,
+                                  RentalBillid = c.rentalBillId
+                              }).ToList();
+            return listCharge;
+        }
+        //Lấy toàn bộ phí của khách hàng (thanh toán + chưa thanh toán)
+        public IList getAllLateChargeByIDCus(Guid id)
+        {
+            var listCharge = (from c in db.LateCharges
+                              where c.RentalBill.customerID == id
+                              orderby c.status
+                              select new
+                              {
+                                  ID = c.lateChargeId,
+                                  DiskRent = c.RentalBill.Disk.DiskTitle.diskTitleName,
+                                  HireDate = c.RentalBill.paymentTerm,
+                                  PayDate = c.RentalBill.payDate,
+                                  Fee = c.lateFee,
+                                  Status = c.status,
+                                  RentalBillid = c.rentalBillId
+                              }).ToList();
+            return listCharge;
+        }
         public void addRentalBill(RentalBill e)
         {
             db.RentalBills.Add(e);

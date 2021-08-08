@@ -21,11 +21,11 @@ namespace Entities
         public string customerPhone { get; set; }
 
         //Nối đến RentalBill
-        [JsonIgnore]
-        public virtual ICollection<RentalBill> RentalBills { get; set; }
+        //[JsonIgnore]
+        //public virtual ICollection<RentalBill> RentalBills { get; set; }
 
         //Nối đến Reservation
-        [JsonIgnore]
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        //[JsonIgnore]
+        //public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

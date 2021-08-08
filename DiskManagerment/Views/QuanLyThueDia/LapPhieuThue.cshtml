@@ -22,7 +22,7 @@
         }
 
     .payment-block {
-        height: 100px;
+        height: 130px;
         float: unset;
         padding: 10px;
     }
@@ -32,7 +32,7 @@
         width: 100%;
     }
     [aria-owns="tbxChooseCustomer_listbox"]{
-        width: 200px;
+        width: 240px;
         float: right;
     }
     .k-animation-container * {
@@ -45,15 +45,9 @@
         width: 150px;
         pointer-events: none;
     }
-    #showCustomerLateCharge {
-        padding: 4px 12px;
-        float: right;
-        border-radius: 4px 0px 0px 4px;
-        margin-right: -2px;
-    }
     .inner-row-custom .k-widget.k-numerictextbox {
         float: right;
-        width: 242px;   
+        width: 240px;   
     }
     .k-callout-s {
         bottom: 0 !important;
@@ -64,7 +58,6 @@
     .noti-alert {
         position: absolute;
         z-index: 9999;
-        color: red;
         font-size: 20px;
         right: 3px;
     }
@@ -82,17 +75,29 @@
                 <div style="display:inline-block" class="inner-row-custom">
                     <div>
                         Tổng tiền:
-                        <input id="tbxTotalMoney" type="text" class="" readonly>
+                        <input id="tbxTotalMoney" type="text" style="color: red;pointer-events:none;" readonly>
                     </div>
                 </div>
-                <div style="display:inline-block;transform: translateY(10px)" class="inner-row-custom">
+                <div style="display:inline-block;transform: translateY(-15px)" class="inner-row-custom">
                     <div>
                         Khách hàng:
-                        <select id="tbxChooseCustomer"></select>
-                        <button id="showCustomerLateCharge" class="k-button btn btn-default" title="Khách hàng có phí trễ hạn chưa thanh toán!">
-                            <i class="far fa-money-check"></i>
-                            <i class="noti-alert hide fas fa-exclamation"></i>
-                        </button>
+                        <div style="float:right">
+                            <div class="">
+                                <select id="tbxChooseCustomer"></select>
+                            </div>
+                            <div style="">
+                                <button id="showCustomerOnHold" class="k-button btn btn-default" disabled style="padding: 6px 8px;margin-top: 5px;" title="Khách hàng có phí trễ hạn chưa thanh toán!">
+                                    <i class="far fa-money-check"></i>
+                                    <i class="noti-alert hide fas fa-exclamation"></i>
+                                    Đĩa đang chờ
+                                </button>
+                                <button id="showCustomerLateCharge" class="k-button btn btn-default" disabled style="margin-top: 5px;" title="Khách hàng có phí trễ hạn chưa thanh toán!">
+                                    <i class="far fa-money-check"></i>
+                                    <i class="noti-alert hide fas fa-exclamation"></i>
+                                    Phí trễ hạn
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
