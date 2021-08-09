@@ -17,7 +17,7 @@ namespace DAL
         public DbSet<DiskTitle> DiskTitles { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<RentalBill> RentalBills { get; set; }
-        public DbSet<LateCharge> LateCharges { get; set; }
+        //public DbSet<LateCharge> LateCharges { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
     }
 }

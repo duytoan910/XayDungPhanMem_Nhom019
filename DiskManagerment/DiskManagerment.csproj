@@ -4151,6 +4151,7 @@
     <Content Include="Views\QuanLyThueDia\LapPhieuThue.cshtml" />
     <Content Include="Views\QuanLyThueDia\TraDia.cshtml" />
     <Content Include="Views\QuanLyThueDia\DatDia.cshtml" />
+    <Content Include="Views\Shared\modals\SelectOnHoldDiskModal.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

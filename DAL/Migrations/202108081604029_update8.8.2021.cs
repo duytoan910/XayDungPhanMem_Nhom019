@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class CreateDB : DbMigration
+    public partial class update882021 : DbMigration
     {
         public override void Up()
         {
@@ -18,25 +18,6 @@
                         customerPhone = c.String(),
                     })
                 .PrimaryKey(t => t.customerID);
-            
-            CreateTable(
-                "dbo.RentalBill",
-                c => new
-                    {
-                        rentalBillId = c.Guid(nullable: false, identity: true),
-                        hireDate = c.DateTime(nullable: false),
-                        paymentTerm = c.DateTime(nullable: false),
-                        payDate = c.DateTime(nullable: false),
-                        lateFee = c.Double(nullable: false),
-                        status = c.Boolean(nullable: false),
-                        customerID = c.Guid(nullable: false),
-                        diskId = c.Guid(nullable: false),
-                    })
-                .PrimaryKey(t => t.rentalBillId)
-                .ForeignKey("dbo.Customer", t => t.customerID, cascadeDelete: true)
-                .ForeignKey("dbo.Disk", t => t.diskId, cascadeDelete: true)
-                .Index(t => t.customerID)
-                .Index(t => t.diskId);
             
             CreateTable(
                 "dbo.Disk",
@@ -96,44 +77,48 @@
                 .Index(t => t.diskId);
             
             CreateTable(
-                "dbo.LateCharge",
+                "dbo.RentalBill",
                 c => new
                     {
-                        lateChargeId = c.Guid(nullable: false, identity: true),
+                        rentalBillId = c.Guid(nullable: false, identity: true),
+                        hireDate = c.DateTime(nullable: false),
+                        paymentTerm = c.DateTime(nullable: false),
+                        payDate = c.DateTime(),
                         lateFee = c.Double(nullable: false),
                         status = c.Boolean(nullable: false),
-                        rentalBillId = c.Guid(nullable: false),
+                        IsReturn = c.Boolean(nullable: false),
+                        customerID = c.Guid(nullable: false),
+                        diskId = c.Guid(nullable: false),
                     })
-                .PrimaryKey(t => t.lateChargeId)
-                .ForeignKey("dbo.RentalBill", t => t.rentalBillId, cascadeDelete: true)
-                .Index(t => t.rentalBillId);
+                .PrimaryKey(t => t.rentalBillId)
+                .ForeignKey("dbo.Customer", t => t.customerID, cascadeDelete: true)
+                .ForeignKey("dbo.Disk", t => t.diskId, cascadeDelete: true)
+                .Index(t => t.customerID)
+                .Index(t => t.diskId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.LateCharge", "rentalBillId", "dbo.RentalBill");
             DropForeignKey("dbo.RentalBill", "diskId", "dbo.Disk");
+            DropForeignKey("dbo.RentalBill", "customerID", "dbo.Customer");
             DropForeignKey("dbo.Disk", "diskTitleId", "dbo.DiskTitle");
             DropForeignKey("dbo.Reservation", "diskTitleId", "dbo.DiskTitle");
             DropForeignKey("dbo.Reservation", "diskId", "dbo.Disk");
             DropForeignKey("dbo.Reservation", "customerID", "dbo.Customer");
             DropForeignKey("dbo.DiskTitle", "diskTypeId", "dbo.DiskType");
-            DropForeignKey("dbo.RentalBill", "customerID", "dbo.Customer");
-            DropIndex("dbo.LateCharge", new[] { "rentalBillId" });
+            DropIndex("dbo.RentalBill", new[] { "diskId" });
+            DropIndex("dbo.RentalBill", new[] { "customerID" });
             DropIndex("dbo.Reservation", new[] { "diskId" });
             DropIndex("dbo.Reservation", new[] { "customerID" });
             DropIndex("dbo.Reservation", new[] { "diskTitleId" });
             DropIndex("dbo.DiskTitle", new[] { "diskTypeId" });
             DropIndex("dbo.Disk", new[] { "diskTitleId" });
-            DropIndex("dbo.RentalBill", new[] { "diskId" });
-            DropIndex("dbo.RentalBill", new[] { "customerID" });
-            DropTable("dbo.LateCharge");
+            DropTable("dbo.RentalBill");
             DropTable("dbo.Reservation");
             DropTable("dbo.DiskType");
             DropTable("dbo.DiskTitle");
             DropTable("dbo.Disk");
-            DropTable("dbo.RentalBill");
             DropTable("dbo.Customer");
         }
     }

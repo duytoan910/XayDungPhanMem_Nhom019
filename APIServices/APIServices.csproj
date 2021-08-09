@@ -144,7 +144,6 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ReservationController.cs" />
     <Compile Include="Controllers\RentalBillController.cs" />
-    <Compile Include="Controllers\LateChargeController.cs" />
     <Compile Include="Controllers\DiskTypeController.cs" />
     <Compile Include="Controllers\DiskTitleController.cs" />
     <Compile Include="Controllers\DiskController..cs" />

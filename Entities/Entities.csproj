@@ -49,7 +49,6 @@
     <Compile Include="Disk.cs" />
     <Compile Include="DiskTitle.cs" />
     <Compile Include="DiskType.cs" />
-    <Compile Include="LateCharge.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RentalBill.cs" />
     <Compile Include="Reservation.cs" />

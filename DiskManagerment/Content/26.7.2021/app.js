@@ -200,39 +200,6 @@ $(document).on('ready', function () {
                     format: "#"
                 });
             }
-            $("#formAddDiskTitle .btnSaveOrUpdate").bind('click', function (e) {
-                e.preventDefault();
-                if (validatorAddDiskTitle.validate()) {
-                    if (!$('#tbx_Create_DiskTitleType').getKendoDropDownList().value()) {
-                        noti("Vui lòng nhập đầy đủ thông tin!", "error")
-                        return
-                    }
-
-                    var format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                    if (format.test($("#tbx_Create_DiskTitleCode").val())) {
-                        noti("Mã không được chứa khoảng trắng hay ký tự đặc biệt!", "warning")
-                        return;
-                    }
-                    $.ajax({
-                        url: urlAPI + '/DiskTitle/addDiskTitle',
-                        dataType: "json",
-                        type: 'post',
-                        data: {
-                            diskTitleCode: $("#tbx_Create_DiskTitleCode").val().toUpperCase(),
-                            diskTitleName: $("#tbx_Create_DiskTitleName").val(),
-                            diskTypeId: $('#tbx_Create_DiskTitleType').getKendoDropDownList().value()
-                        },
-                        complete: function (result) {
-                            noti("Thao tác thành công!", "success")
-                            refreshGird('#grid_qldm_tuadia')
-                            modalAddDisk.close()
-                            $("#formAddDiskTitle .btnResetFeild").click();
-                        }
-                    })
-                } else {
-                    noti("Vui lòng nhập đầy đủ thông tin!", "error")
-                }
-            })
 
             $('#formAddDisk .btnSaveOrUpdate').unbind('click')
             $("#formAddDisk .btnSaveOrUpdate").bind('click', function (e) {
@@ -255,7 +222,32 @@ $(document).on('ready', function () {
                             dateAdd: new Date().toJSON(),
                             quantity: $("#tbx_Create_DiskQuantity").getKendoNumericTextBox().value()
                         },
-                        complete: function (result) {
+                        success: function (result) {
+                            $.ajax({
+                                url: urlAPI + '/Reservation/setOnHold',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    title: $('#tbx_Create_DiskTitle').getKendoDropDownList().text(),
+                                    diskID: result.diskId
+                                },
+                                success: function (result_) {
+                                    if (result_ == true) {
+                                        $.ajax({
+                                            url: urlAPI + '/Disk/setStatus',
+                                            dataType: "json",
+                                            type: 'post',
+                                            data: {
+                                                id: result.diskId,
+                                                status: "Đang chờ"
+                                            },
+                                            complete: function () {
+                                                refreshGird('#grid_qldm_dia')
+                                            }
+                                        })
+                                    }
+                                }
+                            })
                             noti("Thao tác thành công!", "success")
                             refreshGird('#grid_qldm_dia')
                             modalAddDisk.close()
@@ -348,8 +340,11 @@ $(document).on('ready', function () {
                             rentalPeriod: $("#tbx_Config_HireDay").getKendoNumericTextBox().value(),
                         },
                         complete: function (result) {
-                            refreshGird('#grid_qltd_lapphieuthue_dsdia')
-                            $('#grid_qltd_lapphieuthue_dshoadon').getKendoGrid().dataSource.data([])
+                            $('.k-grid').each(function (id,item) {
+                                refreshGird(item)
+                            })
+                            if ($('#grid_qltd_lapphieuthue_dshoadon').getKendoGrid())
+                                $('#grid_qltd_lapphieuthue_dshoadon').getKendoGrid().dataSource.data([])
                             noti("Thao tác thành công!", "success")
                         }
                     })
@@ -381,8 +376,6 @@ $(document).on('ready', function () {
     $('.btn_Menu_Logout').unbind('click')
     $('.btn_Menu_Logout').click(function () {
         $("#dialog").kendoDialog({
-            width: 220,
-            height: 110,
             title: "Đăng xuất",
             closable: true,
             modal: true,
@@ -485,7 +478,7 @@ var setup_QLKH = function () {
         ],
         excel: {
             allPages: true,
-            fileName: "DanhSachKhachHang-(" + moment().format("DD-MM-YYYY") + ")",
+            fileName: "DanhSachKhachHang[" + moment().format("HH:mm DD-MM-YYYY") + "]",
             filterable: true
         },
         noRecords: {
@@ -542,8 +535,6 @@ var setup_QLKH = function () {
                 }
 
                 $("#dialog").kendoDialog({
-                    width: 220,
-                    height: 120,
                     title: "Thông báo",
                     closable: true,
                     modal: true,
@@ -738,8 +729,6 @@ var setup_QLPTH = function () {
             return;
         }
         $("#dialog").kendoDialog({
-            width: 220,
-            height: 170,
             title: "Thanh toán",
             closable: true,
             modal: true,
@@ -751,10 +740,31 @@ var setup_QLPTH = function () {
                 text: 'Có',
                 primary: true,
                 action: function () {
-
+                    var addCount = 0
+                    grid_qlpth.selectedKeyNames().forEach(function (item) {
+                        var dataItem = grid_qlpth.dataSource.get(item)
+                        $.ajax({
+                            url: urlAPI + '/RentalBill/setPayStatus',
+                            dataType: "json",
+                            type: 'post',
+                            data: {
+                                id: dataItem.ID
+                            },
+                            complete: function () {
+                                addCount++
+                            }
+                        })
+                    })
+                    var syncInterval = setInterval(function () {
+                        if (addCount == grid_qlpth.selectedKeyNames().length) {
+                            clearInterval(syncInterval)
+                            noti("Thao tác thành công!", "success")
+                            $('thead [data-role="checkbox"]').click().click()
+                            refreshGird('#grid_qlpth')
+                        }
+                    }, 100)
                 }
-            }
-            ],
+            }],
             animation: {
                 open: {
                     effects: "fade:in"
@@ -851,7 +861,7 @@ var setup_QLPTH = function () {
         ],
         excel: {
             allPages: true,
-            fileName: "DanhSachKhachHang-(" + moment().format("DD-MM-YYYY") + ")",
+            fileName: "DanhSachKhachHang[" + moment().format("HH:mm DD-MM-YYYY") + "]",
             filterable: true
         },
         noRecords: {
@@ -910,10 +920,10 @@ var setup_QLPTH = function () {
                 field: "Status",
                 title: "Trạng thái",
                 template: function (e) {
-                    if (e.status == "True") {
-                        return '<button class="btn btn-success" disabled>Đã thanh toán</button>'
+                    if (e.Status == true) {
+                        return '<button class="btn btn-outline-success" disabled>Đã thanh toán</button>'
                     } else {
-                        return '<button class="btn btn-danger" disabled>Chưa thanh toán</button>'
+                        return '<button class="btn btn-outline-danger" disabled>Chưa thanh toán</button>'
                     }
                 }
             }]
@@ -978,7 +988,7 @@ var setup_QLDM_TuaDia = function () {
         ],
         excel: {
             allPages: true,
-            fileName: "DanhSachTuaDia-(" + moment().format("DD-MM-YYYY") + ")",
+            fileName: "DanhSachTuaDia[" + moment().format("HH:mm DD-MM-YYYY") + "]",
             filterable: true
         },
         noRecords: {
@@ -1038,8 +1048,6 @@ var setup_QLDM_TuaDia = function () {
                 }
 
                 $("#dialog").kendoDialog({
-                    width: 220,
-                    height: 120,
                     title: "Thông báo",
                     closable: true,
                     modal: true,
@@ -1150,7 +1158,7 @@ var setup_QLDM_Dia = function () {
         dataSource: {
             transport: {
                 read: {
-                    url: urlAPI + "/Disk/getAllDiskForLoadOnShelf",
+                    url: urlAPI + "/Disk/getAllDiskForLoad",
                     dataType: "json"
                 }
             },
@@ -1175,7 +1183,7 @@ var setup_QLDM_Dia = function () {
         ],
         excel: {
             allPages: true,
-            fileName: "DanhSachDia-(" + moment().format("DD-MM-YYYY") + ")",
+            fileName: "DanhSachDia[" + moment().format("HH:mm DD-MM-YYYY") + "]",
             filterable: true
         },
         noRecords: {
@@ -1205,8 +1213,6 @@ var setup_QLDM_Dia = function () {
                 }
 
                 $("#dialog").kendoDialog({
-                    width: 220,
-                    height: 120,
                     title: "Thông báo",
                     closable: true,
                     modal: true,
@@ -1274,7 +1280,7 @@ var setup_QLDM_Dia = function () {
                 }
             }
         }, {
-            field: "Title",
+                field: "Title",
             title: "Tên tựa đĩa",
             width: 250,
             filterable: {
@@ -1426,7 +1432,7 @@ var setup_QLTD_LPT = function () {
                     id: dataSeletect.customerID
                 },
                 success: function (result) {
-                    if (result.length == 0) {
+                    if (result.length > 0) {
                         $('#showCustomerLateCharge').attr("disabled", false).addClass('btn-danger')
                         blockTooltip = false
 
@@ -1439,7 +1445,10 @@ var setup_QLTD_LPT = function () {
 
                         $('#showCustomerLateCharge').unbind('click')
                         $('#showCustomerLateCharge').bind('click', function (e) {
-                            window.open("/QuanLyPhiTreHan?id=" + dataSeletect.customerID , '_blank').focus();
+                            var strWindowFeatures = "location=no,height=500,width=700,scrollbars=no,status=no,left=418px;top=50px";
+                            var URL = "/QuanLyPhiTreHan?id=" + dataSeletect.customerID;
+                            window.open(URL, "_blank", strWindowFeatures).focus();
+
                         })
                     } else {
                         $('#showCustomerLateCharge').attr("disabled", true).removeClass('btn-danger')
@@ -1682,8 +1691,8 @@ var setup_QLTD_LPT = function () {
                     customerID: ddl_ChooseCustomer.value(),
                     hireDate: new Date().toJSON(),
                     paymentTerm: moment().add('day', item.RentalPeriod).toDate().toJSON(),
-                    payDate: new Date().toJSON(),
-                    lateFee: item.Charge,
+                    payDate: "",
+                    lateFee: 0,
                     status: false,
                 },
                 complete: function (result) {
@@ -1717,23 +1726,41 @@ function setup_QLTD_TraDia() {
     var grid_qltd_TraDia;
 
     grid_qltd_TraDia = $("#grid_qltd_TraDia").kendoGrid({
+        dataSource: {
+            transport: {
+                read: {
+                    url: urlAPI + "/RentalBill/getRentalBillDetail",
+                    dataType: "json"
+                }
+            },
+            schema: {
+                model: {
+                    id: "ID"
+                }
+            },
+            pageSize: 20
+        },
         resizeable: true,
         scrollable: true,
         resizable: true,
         sortable: true,
         navigatable: true,
         width: 'auto',
-        selectable: "row",
         toolbar: [
             {
                 template:
-                    '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+                    '<button id = "btnConfirmReturn" class= "btn-info k-button k-button-icontext" ><i class="far fa-check"></i> Xác nhận trả đĩa</button>'
             },
+            {
+                template:
+                    '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+            }
             //"excel"
         ],
+        persistSelection: true,
         excel: {
             allPages: true,
-            fileName: "DanhSachKhachHang-(" + moment().format("DD-MM-YYYY") + ")",
+            fileName: "DanhSachKhachHang[" + moment().format("HH-mm DD-MM-YYYY") + "]",
             filterable: true
         },
         noRecords: {
@@ -1743,23 +1770,60 @@ function setup_QLTD_TraDia() {
             mode: "row"
         },
         change: function (e) {
-            var total = 0, totalArr = []
-            var rows = e.sender.select();
-            rows.each(function (e) {
-                var dataItem = this.dataItem(this);
-                totalArr.push(dataItem)
-            })
-
-            totalArr.forEach(function (item) {
-                total += item.lateFee
-            })
-            $('#tbxTotalMoney').val(total)
         },
         dataBound: function (e) {
             //click
             $('#btnDeleteLateCharge').unbind('click')
             $('#btnDeleteLateCharge').click(function () {
 
+            })
+
+            $('#btnConfirmReturn').unbind('click')
+            $('#btnConfirmReturn').click(function () {
+                var addCount = 0, sltID = $('#grid_qltd_TraDia').getKendoGrid().selectedKeyNames()
+
+                sltID.forEach(function (item) {
+                    var currDataItem = grid_qltd_TraDia.dataSource.get(item)
+                    $.ajax({
+                        url: urlAPI + '/Reservation/setOnHold',
+                        dataType: "json",
+                        type: 'post',
+                        data: {
+                            title: currDataItem.DiskName,
+                            diskID: currDataItem.ID
+                        },
+                        success: function (e) {
+                            $.ajax({
+                                url: urlAPI + '/Disk/setStatus',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    id: currDataItem.ID,
+                                    status: e==true?"Đang chờ":"Trên kệ"
+                                }
+                            })
+                            $.ajax({
+                                url: urlAPI + '/RentalBill/setPayDate',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    id: currDataItem.IDBill,
+                                    fee: currDataItem.Fee
+                                }
+                            })
+                            addCount++
+                        }
+                    })
+                })
+
+                var syncInterval = setInterval(function () {
+                    if (addCount == sltID.length) {
+                        clearInterval(syncInterval)
+                        noti("Thao tác thành công!", "success")
+                        $('thead [data-role="checkbox"]').click().click()
+                        refreshGird('#grid_qltd_TraDia')
+                    }
+                }, 100)
             })
 
             //hover
@@ -1773,30 +1837,36 @@ function setup_QLTD_TraDia() {
             {
                 selectable: true, width: "50px"
             }, {
-                field: "customerCode",
-                title: "Đĩa đã thuê",
+                field: "DiskCode",
+                title: "Mã đĩa",
             }, {
-                field: "customerName",
-                title: "Hạn trả",
-                format: "{0:MM/dd/yyyy}"
+                field: "DiskName",
+                title: "Tựa đĩa",
             }, {
-                field: "customerPhone",
-                title: "Ngày trả",
-                format: "{0:MM/dd/yyyy}"
-            }, {
-                field: "customerAddress",
-                title: "Phí phạt",
-                format: "#,### VND"
-            }, {
-                field: "customerAddress",
+                field: "Status",
                 title: "Trạng thái",
                 template: function (e) {
                     if (e.status == "True") {
-                        return '<button class="btn btn-outline-success" disabled>Đã thanh toán</button>'
+                        return '<button class="btn btn-outline-success" disabled>Trên kệ</button>'
                     } else {
-                        return '<button class="btn btn-outline-danger" disabled>Chưa thanh toán</button>'
+                        return '<button class="btn btn-outline-danger" disabled>Đang thuê</button>'
                     }
                 }
+            }, {
+                field: "CustomerName",
+                title: "Khách hàng thuê"
+            }, {
+                field: "HireDate",
+                title: "Ngày thuê",
+                template: function (e) {
+                    return moment(e.HireDate).format('HH:mm - DD/MM/YYYY')
+                },
+            }, {
+                field: "PaymentTerm",
+                title: "Hạn thuê",
+                template: function (e) {
+                    return moment(e.PaymentTerm).format('HH:mm - DD/MM/YYYY')
+                },
             }]
     }).data('kendoGrid');
 }
@@ -1875,6 +1945,7 @@ var setup_QLTD_DatDia = function () {
         pageable: true,
         resizable: true,
         sortable: true,
+        height: 'calc(100% - 50px)',
         navigatable: true,
         persistSelection: true,
         width: 'auto',
@@ -1966,7 +2037,6 @@ var setup_QLTD_DatDia = function () {
         sortable: true,
         navigatable: true,
         width: 'auto',
-        height: 'calc(100% - 50px)',
         selectable: "row",
         dataBound: function () {
             record = 0
@@ -2034,14 +2104,21 @@ var setup_QLTD_DatDia = function () {
             },
         }, {
             field: "DiskID",
-            title: "Đang chờ",
+            title: "Trạng thái",
             width: 100,
             filterable: {
                 cell: {
                     operator: "contains",
                     suggestionOperator: "contains"
                 }
-            }
+                },
+                template: function (e) {
+                    if (e.DiskID) {
+                        return "<a class='k-button btn btn-outline-warning'>Đang chờ</a>"
+                    } else {
+                        return ""
+                    }
+                }
         }],
         change: function (e) {
         }

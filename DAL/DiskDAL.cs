@@ -24,6 +24,7 @@ namespace DAL
                         select new
                         {
                             ID = d.diskId,
+                            Code = d.diskCode,
                             Title = d.DiskTitle.diskTitleName,
                             Type = d.DiskTitle.DiskType.diskName,
                             Date = d.dateAdd,
@@ -70,6 +71,7 @@ namespace DAL
             else
                 _distCode += "MV_";
 
+            Disk returnEnt = new Disk();
             Disk add;
             for(int i=0; i< quantity; i++)
             {
@@ -80,16 +82,16 @@ namespace DAL
                     {
                     _distCode + diskTitle.diskTitleCode + "_"
                     }
-                ) + i);
+                ));
                 add.diskId = e.diskId;
                 add.dateAdd = e.dateAdd;
                 add.status = e.status;
                 add.diskTitleId = e.diskTitleId;
 
-                db.Disks.Add(add);
+                returnEnt = db.Disks.Add(add);
+                db.SaveChanges();
             }
-            db.SaveChanges();
-            return new Disk();
+            return returnEnt;
         }
 
         public bool deleteDisk(Guid id)

@@ -59,9 +59,13 @@ namespace ServicesProject.Controllers
         {
             lcDAL.editRentalBill(c);
         }
-        public void setPayDate(Guid id)
+        public void setPayDate(Guid id, int fee)
         {
-            lcDAL.setPayDate(id);
+            lcDAL.setPayDate(id, fee);
+        }
+        public void setPayStatus(Guid id)
+        {
+            lcDAL.setPayStatus(id);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Entities
         public DateTime? payDate { get; set; }
         public double lateFee { get; set; }
         public bool status { get; set; }
+        public bool IsReturn { get; set; }
         [ForeignKey("Customer")]
         public Guid customerID { get; set; }
         [ForeignKey("Disk")]

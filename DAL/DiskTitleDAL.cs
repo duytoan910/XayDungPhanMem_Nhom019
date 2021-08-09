@@ -72,12 +72,10 @@ namespace DAL
 
         public void editDiskTitle(DiskTitle e)
         {
-            var s = db.DiskTypes.Where(x => x.diskName == e.DiskType.diskName).FirstOrDefault();
-
             DiskTitle edit = findDiskTitle(e.diskTitleId);
 
             edit.diskTitleName = e.diskTitleName;
-            edit.diskTypeId = s.diskTypeId;
+            edit.diskTypeId = e.diskTypeId;
 
             db.Entry(edit).State = EntityState.Modified;
             db.SaveChanges();
