@@ -55,5 +55,9 @@ namespace ServicesProject.Controllers
         {
             ReservationDAL.editReservation(ReservationType);
         }
+        public object checkExistReservationByCustomer(Guid diskTitleId, Guid customerID)
+        {
+            return JsonConvert.SerializeObject(ReservationDAL.checkExistReservationByCustomer(diskTitleId, customerID));
+        }
     }
 }

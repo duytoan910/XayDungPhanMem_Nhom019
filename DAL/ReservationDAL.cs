@@ -119,5 +119,12 @@ namespace DAL
             db.Entry(x).State = EntityState.Modified;
             db.SaveChanges();
         }
+        public bool checkExistReservationByCustomer(Guid diskTitleId, Guid customerID)
+        {
+            Reservation res = db.Reservations.Where(n => n.diskTitleId == diskTitleId && n.customerID == customerID).FirstOrDefault();
+            if (res != null)
+                return true;
+            return false;
+        }
     }
 }

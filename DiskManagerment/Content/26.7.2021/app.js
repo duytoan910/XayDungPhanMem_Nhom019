@@ -195,10 +195,12 @@ $(document).on('ready', function () {
                 dataValueField: "diskTitleId",
                 template: '#:diskTitleCode# - #:diskTitleName#'
             })
+            
             if (!$("#tbx_Create_DiskQuantity").getKendoNumericTextBox()) {
                 $("#tbx_Create_DiskQuantity").kendoNumericTextBox({
                     spinners: true,
-                    format: "#"
+                    format: "#",
+                    value: 1
                 });
             }
 
@@ -1985,10 +1987,6 @@ function setup_QLTD_TraDia() {
             {
                 template:
                     '<button id = "btnConfirmReturn" class= "btn-info k-button k-button-icontext" ><i class="far fa-check"></i> Xác nhận trả đĩa</button>'
-            },
-            {
-                template:
-                    '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
             }, {
                 template:
                     '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
@@ -2010,12 +2008,6 @@ function setup_QLTD_TraDia() {
         change: function (e) {
         },
         dataBound: function (e) {
-            //click
-            $('#btnDeleteLateCharge').unbind('click')
-            $('#btnDeleteLateCharge').click(function () {
-
-            })
-
             $('#btnConfirmReturn').unbind('click')
             $('#btnConfirmReturn').click(function () {
                 var addCount = 0, sltID = $('#grid_qltd_TraDia').getKendoGrid().selectedKeyNames()
@@ -2303,26 +2295,74 @@ var setup_QLTD_DatDia = function () {
         navigatable: true,
         width: 'auto',
         selectable: "row",
+        toolbar: [
+            {
+                template:
+                    '<button id = "btnCancelReservation" class= "btn-danger k-button k-button-icontext" style="float:right"><i class="far fa-trash-alt"></i> Hủy</button>'
+            }
+        ],
         dataBound: function () {
             record = 0
 
-            //click
-            $('#btnAddDisk').unbind('click')
-            $(document).on('click', '#btnAddDisk', function () {
-                modalAddDisk.center().open();
+            $('#btnCancelReservation').unbind('click')
+            $('#btnCancelReservation').bind('click', function (e) {
+                var selectedID = grid_qltd_datdia_dskh.dataItem(grid_qltd_datdia_dskh.select())
+                var isOnHold = false;
+
+                if (!selectedID) {
+                    noti("Vui lòng chọn một khách khàng để hủy!", "warning")
+                    return
+                }
+
+                if (selectedID.DiskID)
+                    isOnHold = true
+
+                $.ajax({
+                    url: urlAPI + '/Reservation/deleteReservation',
+                    dataType: "json",
+                    type: 'post',
+                    data: {
+                        id: selectedID.ReID
+                    },
+                    complete: function (result) {
+                        noti("Thao tác thành công!", "success")
+                        if (isOnHold) {
+                            var nextItem = grid_qltd_datdia_dskh.dataSource.data()[0]
+                            $.ajax({
+                                url: urlAPI + '/Reservation/setOnHold',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    title: grid_qltd_datdia_dstuadia.dataSource.get(sltTitleID[0]).Name,
+                                    diskID: selectedID.DiskID
+                                },
+                                success: function (result_) {
+                                    if (result_ == false) {
+                                        $.ajax({
+                                            url: urlAPI + '/Disk/setStatus',
+                                            dataType: "json",
+                                            type: 'post',
+                                            data: {
+                                                id: selectedID.DiskID,
+                                                status: "Trên kệ"
+                                            },
+                                            complete: function () {
+                                                refreshGird('#grid_qltd_datdia_dskh')
+                                            }
+                                        })
+                                    }
+                                    refreshGird('#grid_qltd_datdia_dskh')
+                                }
+                            })
+                        }else refreshGird('#grid_qltd_datdia_dskh')
+                    }
+                })
             })
 
-            //hover
-            $('#btnUpdateDisk,#btnUpdateDisk *').on('mouseover', function () {
-                $('[role="row"].k-state-selected').addClass('hoverEdit')
+            $('#btnCancelReservation,#btnCancelReservation *').on('mouseover', function () {
+                $('#grid_qltd_datdia_dskh [role="row"].k-state-selected').addClass('hoverDelete')
             }).on('mouseout', function () {
-                $('[role="row"].k-state-selected').removeClass('hoverEdit')
-            })
-
-            $('#btnDeleteDisk,#btnDeleteDisk *').on('mouseover', function () {
-                $('[role="row"].k-state-selected').addClass('hoverDelete')
-            }).on('mouseout', function () {
-                $('[role="row"].k-state-selected').removeClass('hoverDelete')
+                $('#grid_qltd_datdia_dskh [role="row"].k-state-selected').removeClass('hoverDelete')
             })
         },
         columns: [{
@@ -2400,20 +2440,52 @@ var setup_QLTD_DatDia = function () {
             noti("Bạn chưa chọn khách hàng để đặt!", "error")
             return
         }
+
         $.ajax({
-            url: urlAPI + '/Reservation/addReservation',
+            url: urlAPI + '/Disk/getDiskByTitle',
             dataType: "json",
             type: 'post',
             data: {
-                diskTitleId: sltTitleID,
-                customerID: ddl_ChooseCustomer.value(),
-                dateOrder: new Date().toJSON()
+                diskTitleID: sltTitleID
             },
-            complete: function (e) {
-                noti('Đặt trước cho khách hàng thành công!', "success")
-                refreshGird("#grid_qltd_datdia_dstuadia")
-                grid_qltd_datdia_dskh.dataSource.data([])
-                ddl_ChooseCustomer.value("")
+            success: function (result) {
+                if (result.length > 0) {
+                    noti("Tựa đĩa đang có trên kệ, không thể đặt trước!")
+                    return;
+                } else {
+                    $.ajax({
+                        url: urlAPI + '/Reservation/checkExistReservationByCustomer',
+                        dataType: "json",
+                        type: 'post',
+                        data: {
+                            diskTitleId: sltTitleID,
+                            customerID: ddl_ChooseCustomer.value()
+                        },
+                        success: function (e) {
+                            if (e == true) {
+                                noti("Khách hàng đã đặt trước tựa đĩa này rồi!", "warning")
+                                return;
+                            }
+
+                            $.ajax({
+                                url: urlAPI + '/Reservation/addReservation',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    diskTitleId: sltTitleID,
+                                    customerID: ddl_ChooseCustomer.value(),
+                                    dateOrder: new Date().toJSON()
+                                },
+                                complete: function (e) {
+                                    noti('Đặt trước cho khách hàng thành công!', "success")
+                                    refreshGird("#grid_qltd_datdia_dstuadia")
+                                    grid_qltd_datdia_dskh.dataSource.data([])
+                                    ddl_ChooseCustomer.value("")
+                                }
+                            })
+                        }
+                    })
+                }
             }
         })
     })
