@@ -67,5 +67,9 @@ namespace ServicesProject.Controllers
         {
             lcDAL.setPayStatus(id);
         }
+        public void deleteLateCharge(Guid id)
+        {
+            lcDAL.deleteLateCharge(id);
+        }
     }
 }

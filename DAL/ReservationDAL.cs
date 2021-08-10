@@ -66,13 +66,14 @@ namespace DAL
                         where x.customerID == id && x.diskId != null
                         select new
                         {
-                            DiskID = x.diskId,
+                            ID = x.diskId,
+                            Code = x.Disk.diskCode,
                             Title = x.DiskTitle.diskTitleName,
-                            DiskType = x.DiskTitle.DiskType.diskName,
-                            DateAdd = x.Disk.dateAdd,
+                            Type = x.DiskTitle.DiskType.diskName,
+                            Date = x.Disk.dateAdd,
                             Status = x.Disk.status,
                             Charge = x.DiskTitle.DiskType.rentalCharge,
-                            RentalPeriod =x.DiskTitle.DiskType.rentalPeriod
+                            RentalPeriod = x.DiskTitle.DiskType.rentalPeriod
                         }).ToList();
             return list;
         }

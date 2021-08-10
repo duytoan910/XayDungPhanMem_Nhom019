@@ -159,5 +159,15 @@ namespace DAL
             db.Entry(x).State = EntityState.Modified;
             db.SaveChanges();
         }
+        public void deleteLateCharge(Guid id)
+        {
+            RentalBill x = findRentalBill(id);
+
+            if (x != null)
+            {
+                db.RentalBills.Remove(x);
+                db.SaveChanges();
+            }
+        }
     }
 }

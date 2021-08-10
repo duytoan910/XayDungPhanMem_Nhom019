@@ -146,6 +146,12 @@ namespace DAL
             return false;
         }
 
+        public List<Disk> getDiskByTitle(Guid diskTitleID)
+        {
+            var diskType = db.Disks.Where(x => x.diskTitleId == diskTitleID).ToList();
+            return diskType;
+        }
+
         public int getNextCodeIndex(string[] code)
         {
             string filterCode = code[0];

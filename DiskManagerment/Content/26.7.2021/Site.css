@@ -329,9 +329,16 @@ button,button * {
 .k-grid .k-toolbar * {
     font-size: 14px;
 }
-.k-grid .k-toolbar button i {
+.k-grid .k-toolbar button i:not(#btnRefreshGrid i) {
     line-height: 21px;
-    margin-right:5px;
+    margin-right: 5px;
+}
+#btnRefreshGrid i {
+    line-height: 21px;
+    transform: translateX(1px);
+}
+#btnRefreshGrid {
+    float: right;
 }
 .k-grid-content.k-auto-scrollable{
     overflow:scroll;

@@ -7,13 +7,14 @@ var diskTypeVarible,
     modalAddDiskTitle_IsEdit = false,
     modalAddDisk,
     modalConfigDiskType,
+    modalSelectOnHoldDisk,
     validatorAddDiskTitle,
     validatorAddDisk,
     validatorConfigDiskType,
-    validatorAddCustomer
+    validatorAddCustomer,
+    localOnHoldDisk = []
 
 $(document).on('ready', function () {
-
     popupNotification = $("#popupNotification").kendoNotification().data("kendoNotification");
     modalAddCustomer = $("#modalAddCustomer").kendoWindow({
         visible: false,
@@ -361,6 +362,139 @@ $(document).on('ready', function () {
             resetWindow("formConfigDiskType", validatorConfigDiskType)
         }
     }).data("kendoWindow");
+    modalSelectOnHoldDisk = $("#modalSelectOnHoldDisk").kendoWindow({
+        visible: false,
+        height: 400,
+        width: 760,
+        resizeable: false,
+        draggable: false,
+        modal: true,
+        title: "Đĩa đang được chờ",
+        open: function (e) {
+            if ($("#grid_qltd_lapphieuthue_onHold").getKendoGrid()) {
+                $("#grid_qltd_lapphieuthue_onHold").getKendoGrid().dataSource.read()
+                return
+            }
+            var grid_qltd_lapphieuthue_onHold = $("#grid_qltd_lapphieuthue_onHold").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: urlAPI + "/Reservation/getDiskOnHod",
+                            dataType: "json",
+                            data: {
+                                id: $('#SeletecDisKOnHoldCustomerID').val()
+                            }
+                        }
+                    },
+                    schema: {
+                        model: {
+                            id: "ID"
+                        }
+                    },
+                    pageSize: 20
+                },
+                resizeable: true,
+                scrollable: true,
+                pageable: true,
+                resizable: true,
+                sortable: true,
+                navigatable: true,
+                persistSelection: true,
+                width: 'auto',
+                height: '100% !important',
+                noRecords: {
+                    template: "<span style='margin: 0 auto;line-height: 50px;'>Không có dữ liệu!</span>"
+                },
+                filterable: {
+                    mode: "row"
+                },
+                dataBound: function () {
+                    record = 0
+
+                    var grid_qltd_lapphieuthue_dshoadon = $('#grid_qltd_lapphieuthue_dshoadon').getKendoGrid()
+                    localOnHoldDisk.forEach(function (item) {
+                        if (grid_qltd_lapphieuthue_dshoadon.dataSource.data().filter(function (_item) { return _item.ID == item.ID }).length > 0) {
+                            grid_qltd_lapphieuthue_dshoadon.dataSource.data()
+                                .forEach(function (a, i) {
+                                    if (!a) return;
+                                    var compare = a.ID ? a.ID : a.id
+                                    if (compare == item.ID) {
+                                        grid_qltd_lapphieuthue_dshoadon.dataSource.remove(grid_qltd_lapphieuthue_dshoadon.dataSource.at(i))
+                                    }
+                                })
+                        }
+                    })
+                    localOnHoldDisk = []
+                },
+                columns: [
+                    { selectable: true, width: "40px" }, {
+                        field: "Code",
+                        title: "Mã đĩa",
+                        width: 100,
+                        filterable: {
+                            cell: {
+                                operator: "contains",
+                                suggestionOperator: "contains"
+                            }
+                        }
+                    }, {
+                        field: "Title",
+                        title: "Tên tựa đĩa",
+                        width: 250,
+                        filterable: {
+                            cell: {
+                                operator: "contains",
+                                suggestionOperator: "contains"
+                            }
+                        }
+                    }, {
+                        field: "Type",
+                        title: "Thể loại",
+                        width: 150,
+                        filterable: {
+                            cell: {
+                                operator: "contains",
+                                suggestionOperator: "contains"
+                            }
+                        }
+                    }, {
+                        field: "Charge",
+                        title: "Phí thuê",
+                        width: 150,
+                        filterable: {
+                            cell: {
+                                operator: "contains",
+                                suggestionOperator: "contains"
+                            }
+                        }
+                    }
+                ],
+                change: function (e) {
+                }
+            }).data('kendoGrid');
+        },
+        close: function () {
+            var grid = $("#grid_qltd_lapphieuthue_onHold").getKendoGrid()
+            grid.selectedKeyNames().forEach(function (item) {
+                localOnHoldDisk.push(grid.dataSource.get(item))
+            })
+
+            var sum=0,grid_qltd_lapphieuthue_dshoadon = $('#grid_qltd_lapphieuthue_dshoadon').getKendoGrid()
+
+            localOnHoldDisk.forEach(function (item) {
+                if (grid_qltd_lapphieuthue_dshoadon.dataSource.data().filter(function (_item) { return _item.ID == item.ID }).length == 0) {
+                    grid_qltd_lapphieuthue_dshoadon.dataSource.add(
+                        JSON.parse(JSON.stringify(item))
+                    )
+                }
+            })
+            grid_qltd_lapphieuthue_dshoadon.dataSource.data().forEach(function (item) {
+                sum += item.Charge
+            })
+
+            $('#tbxTotalMoney').getKendoNumericTextBox().value(sum)
+        }
+    }).data("kendoWindow");
 
     //click
     $('.btn_Menu_AddCustomer').unbind('click')
@@ -474,7 +608,11 @@ var setup_QLKH = function () {
             }, {
                 template:
                     '<button id = "btnDeleteCustomer" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
-            }, "excel"
+            }, {
+                template:
+                    '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
+            },
+            "excel"
         ],
         excel: {
             allPages: true,
@@ -547,15 +685,30 @@ var setup_QLKH = function () {
                         primary: true,
                         action: function () {
                             $.ajax({
-                                url: urlAPI + '/Customer/deleteCustomer',
+                                url: urlAPI + '/RentalBill/getRentalBillDetailByID',
                                 dataType: "json",
                                 type: 'post',
                                 data: {
-                                    id: sltID.customerID
+                                    cusID: sltID.customerID
                                 },
                                 success: function (result) {
-                                    noti("Thao tác thành công!", "success")
-                                    grid_qlkh.dataSource.read()
+                                    if (result.length > 0) {
+                                        noti("Có đĩa đang được thuê bởi khách hàng này. Không thể xóa!","error")
+                                        return
+                                    } else {
+                                        $.ajax({
+                                            url: urlAPI + '/Customer/deleteCustomer',
+                                            dataType: "json",
+                                            type: 'post',
+                                            data: {
+                                                id: sltID.customerID
+                                            },
+                                            complete: function (result) {
+                                                noti("Thao tác thành công!", "success")
+                                                grid_qlkh.dataSource.read()
+                                            }
+                                        })
+                                    }
                                 }
                             })
                         }
@@ -856,6 +1009,9 @@ var setup_QLPTH = function () {
             {
                 template:
                     '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+            }, {
+                template:
+                    '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
             },
             //"excel"
         ],
@@ -882,14 +1038,56 @@ var setup_QLPTH = function () {
             //click
             $('#btnDeleteLateCharge').unbind('click')
             $('#btnDeleteLateCharge').click(function () {
+                var sltId = grid_qlpth.dataItem(grid_qlpth.select()).ID
+                if (!sltId) {
+                    noti("Vui lòng chọn một phí trễ hạn!", "warning")
+                    return
+                }
 
+                $("#dialog").kendoDialog({
+                    title: "Thông báo",
+                    closable: true,
+                    modal: true,
+                    content: `Bạn có muốn xóa phí trễ hạn này?`,
+                    actions: [{
+                        text: 'Không'
+                    },
+                    {
+                        text: 'Có',
+                        primary: true,
+                        action: function () {
+                            $.ajax({
+                                url: urlAPI + '/RentalBill/deleteLateCharge',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    id: sltId
+                                },
+                                complete: function (result) {
+                                    noti("Thao tác thành công!", "success")
+                                    grid_qldm_tuadia.dataSource.read()
+                                    $('#tbxTotalMoney').getKendoNumericTextBox().value(0)
+                                }
+                            })
+                        }
+                    }
+                    ],
+                    animation: {
+                        open: {
+                            effects: "fade:in"
+                        },
+                        close: {
+                            effects: "fade:out"
+                        }
+                    }
+                }).data("kendoDialog").open();
             })
 
             //hover
-            $('#btnUpdateCustomer,#btnUpdateCustomer *').on('mouseover', function () {
-                $('[role="row"].k-state-selected').addClass('hoverEdit')
+            $('#btnDeleteLateCharge,#btnDeleteLateCharge *').on('mouseover', function () {
+                $('[role="row"].k-state-selected').addClass('hoverDelete')
             }).on('mouseout', function () {
-                $('[role="row"].k-state-selected').removeClass('hoverEdit')
+                $('[role="row"].k-state-selected').removeClass('hoverDelete')
             })
         },
         columns: [
@@ -984,6 +1182,9 @@ var setup_QLDM_TuaDia = function () {
             }, {
                 template:
                     '<button id = "btnDeleteDiskTitle" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+            }, {
+                template:
+                    '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
             }, "excel"
         ],
         excel: {
@@ -1040,10 +1241,9 @@ var setup_QLDM_TuaDia = function () {
 
             $('#btnDeleteDiskTitle').click(function () {
                 var sltID = grid_qldm_tuadia.dataItem(grid_qldm_tuadia.select())
-                modalAddDiskTitle_IsEdit = true;
 
                 if (!sltID) {
-                    noti("Vui lòng chọn một khách hàng!", "warning")
+                    noti("Vui lòng chọn một tựa đĩa!", "warning")
                     return
                 }
 
@@ -1060,15 +1260,30 @@ var setup_QLDM_TuaDia = function () {
                         primary: true,
                         action: function () {
                             $.ajax({
-                                url: urlAPI + '/DiskTitle/deleteDiskTitle',
+                                url: urlAPI + '/Disk/getDiskByTitle',
                                 dataType: "json",
                                 type: 'post',
                                 data: {
-                                    e: sltID.diskTitleId
+                                    diskTitleID: sltID.diskTitleId
                                 },
                                 success: function (result) {
-                                    noti("Thao tác thành công!", "success")
-                                    grid_qldm_tuadia.dataSource.read()
+                                    if (result.length > 0) {
+                                        noti("Tựa đĩa này đang có bản sao. Không thể xóa!", 'error')
+                                        return
+                                    } else {
+                                        $.ajax({
+                                            url: urlAPI + '/DiskTitle/deleteDiskTitle',
+                                            dataType: "json",
+                                            type: 'post',
+                                            data: {
+                                                e: sltID.diskTitleId
+                                            },
+                                            success: function (result) {
+                                                noti("Thao tác thành công!", "success")
+                                                grid_qldm_tuadia.dataSource.read()
+                                            }
+                                        })
+                                    }
                                 }
                             })
                         }
@@ -1179,6 +1394,9 @@ var setup_QLDM_Dia = function () {
             }, {
                 template:
                     '<button id = "btnDeleteDisk" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+            }, {
+                template:
+                    '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
             }, "excel"
         ],
         excel: {
@@ -1205,8 +1423,6 @@ var setup_QLDM_Dia = function () {
 
             $('#btnDeleteDisk').click(function () {
                 var sltID = grid_qldm_dia.dataItem(grid_qldm_dia.select())
-               
-
                 if (!sltID) {
                     noti("Vui lòng chọn một đĩa!", "warning")
                     return
@@ -1224,6 +1440,11 @@ var setup_QLDM_Dia = function () {
                         text: 'Có',
                         primary: true,
                         action: function () {
+                            //var listCheck = grid_qldm_dia.dataSource.data().filter(n => n.Status == "Cho thuê" || n.Status == "Đang chờ")
+                            if (sltID.Status == "Cho thuê" || sltID.Status == "Đang chờ") {
+                                noti("Đĩa này đang được thuê hoặc chờ. Không thể xóa!")
+                                return
+                            }
                             $.ajax({
                                 url: urlAPI + '/Disk/deleteDisk',
                                 dataType: "json",
@@ -1445,7 +1666,7 @@ var setup_QLTD_LPT = function () {
 
                         $('#showCustomerLateCharge').unbind('click')
                         $('#showCustomerLateCharge').bind('click', function (e) {
-                            var strWindowFeatures = "location=no,height=500,width=700,scrollbars=no,status=no,left=418px;top=50px";
+                            var strWindowFeatures = "location=no,height=500,width=750,scrollbars=no,status=no,left=418px;top=50px";
                             var URL = "/QuanLyPhiTreHan?id=" + dataSeletect.customerID;
                             window.open(URL, "_blank", strWindowFeatures).focus();
 
@@ -1474,6 +1695,12 @@ var setup_QLTD_LPT = function () {
                                 $(tooltip_onhold.content[0]).text("Hiện có " + result.length + " đĩa khách hàng đã đặt đang khả dụng!")
                             }
                         }, 50)
+
+                        $('#showCustomerOnHold').unbind('click')
+                        $('#showCustomerOnHold').bind('click', function (e) {
+                            $('#SeletecDisKOnHoldCustomerID').val(dataSeletect.customerID)
+                            modalSelectOnHoldDisk.center().open();
+                        })
                     } else {
                         $('#showCustomerOnHold').attr("disabled", true).removeClass('btn-danger')
                         blockTooltip_Hold = true
@@ -1547,29 +1774,6 @@ var setup_QLTD_LPT = function () {
                     }
                 }
             }, {
-                field: "Date",
-                title: "Ngày nhập",
-                width: 150,
-                template: function (e) {
-                    return moment(e.Date).format('HH:mm - DD/MM/YYYY')
-                },
-                filterable: {
-                    cell: {
-                        operator: "contains",
-                        suggestionOperator: "contains"
-                    }
-                }
-            }, {
-                field: "Status",
-                title: "Trạng thái",
-                width: 150,
-                filterable: {
-                    cell: {
-                        operator: "contains",
-                        suggestionOperator: "contains"
-                    }
-                }
-            }, {
                 field: "Charge",
                 title: "Phí thuê",
                 width: 150,
@@ -1583,8 +1787,14 @@ var setup_QLTD_LPT = function () {
         ],
         change: function (e) {
             var sum = 0;
-            $('#tbxTotalMoney').getKendoNumericTextBox().value(0)
             grid_qltd_lapphieuthue_dshoadon.dataSource.data([])
+            localOnHoldDisk.forEach(function (item) {
+                grid_qltd_lapphieuthue_dshoadon.dataSource.add(
+                    JSON.parse(JSON.stringify(item))
+                )
+                sum += item.Charge
+            })
+            $('#tbxTotalMoney').getKendoNumericTextBox().value(0)
             this.selectedKeyNames().forEach(function (item) {
                 grid_qltd_lapphieuthue_dshoadon.dataSource.add(
                     JSON.parse(JSON.stringify(grid_qltd_lapphieuthue_dsdia.dataSource.get(item)))
@@ -1705,6 +1915,25 @@ var setup_QLTD_LPT = function () {
                             status: "Cho thuê"
                         }
                     })
+                    $.ajax({
+                        url: urlAPI + '/Disk/checkStatus',
+                        dataType: "json",
+                        type: 'post',
+                        data: {
+                            id: item.ID,
+                            status: "Đang chờ"
+                        },
+                        success: function (result) {
+                            $.ajax({
+                                url: urlAPI + '/Reservation/deleteReservationByDiskID',
+                                dataType: "json",
+                                type: 'post',
+                                data: {
+                                    id: item.ID
+                                }
+                            })
+                        }
+                    })
                     addCount++
                 }
             })
@@ -1715,6 +1944,9 @@ var setup_QLTD_LPT = function () {
                 noti("Thao tác thành công!", "success")
                 refreshGird('#grid_qltd_lapphieuthue_dsdia')
                 ddl_ChooseCustomer.value("")
+                $('#showCustomerLateCharge').attr("disabled", true).removeClass('btn-danger')
+                $('#showCustomerOnHold').attr("disabled", true).removeClass('btn-danger')
+                localOnHoldDisk = []
                 grid_qltd_lapphieuthue_dshoadon.dataSource.data([])
                 $('thead [data-role="checkbox"]').click().click()
             }
@@ -1754,6 +1986,9 @@ function setup_QLTD_TraDia() {
             {
                 template:
                     '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+            }, {
+                template:
+                    '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
             }
             //"excel"
         ],
@@ -2153,3 +2388,13 @@ var setup_QLTD_DatDia = function () {
         })
     })
 }
+
+var btnRefreshInit = setInterval(function () {
+    if ($('#btnRefreshGrid')) {
+        clearInterval(btnRefreshInit)
+        $('#btnRefreshGrid').unbind('click')
+        $('#btnRefreshGrid').bind('click', function () {
+            $($(this).closest('.k-grid')).getKendoGrid().dataSource.read()
+        })
+    }
+}, 100)

@@ -53,5 +53,9 @@ namespace ServicesProject.Controllers
         {
             return JsonConvert.SerializeObject(DAL.checkStatus(id, status));
         }
+        public object getDiskByTitle(Guid diskTitleID)
+        {
+            return JsonConvert.SerializeObject(DAL.getDiskByTitle(diskTitleID));
+        }
     }
 }
