@@ -535,6 +535,9 @@ $(document).on('ready', function () {
             }
         }).data("kendoDialog").open();
     })
+
+    if ($('#isAdmin').text() == "False")
+        $('.permission-admin').each((id, item) => {$(item).remove() })
 })
 
 $(window).on("resize", function () {
@@ -607,7 +610,7 @@ var setup_QLKH = function () {
                     '<button id = "btnUpdateCustomer" class= "btn-warning k-button k-button-icontext" > <i class="fas fa-edit"></i> Chỉnh sửa</button>'
             }, {
                 template:
-                    '<button id = "btnDeleteCustomer" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+                    '<button id = "btnDeleteCustomer" class= "btn-danger k-button k-button-icontext permission-admin" ><i class="far fa-trash-alt"></i> Xóa</button>'
             }, {
                 template:
                     '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
@@ -877,8 +880,8 @@ var setup_QLPTH = function () {
     var grid_qlpth, ddl_CustomerSearchID;
     $('#btnPayment').click(function (e) {
         e.preventDefault();
-        if (!$('#tbxTotalMoney').val()) {
-            noti("Bạn chưa chọn khoản trễ nào!", "warning")
+        if ($('#tbxTotalMoney').val() == 0) {
+            noti("Bạn chưa chọn phí trễ nào!", "warning")
             return;
         }
         $("#dialog").kendoDialog({
@@ -1008,7 +1011,7 @@ var setup_QLPTH = function () {
         toolbar: [
             {
                 template:
-                    '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext" ><i class="far fa-trash-alt"></i> Xóa</button>'
+                    '<button id = "btnDeleteLateCharge" class= "btn-danger k-button k-button-icontext permission-admin" ><i class="far fa-trash-alt"></i> Xóa</button>'
             }, {
                 template:
                     '<button id = "btnRefreshGrid" class= "btn-info k-button k-button-icontext" ><i class="far fa-redo"></i></button>'
@@ -2016,49 +2019,76 @@ function setup_QLTD_TraDia() {
             $('#btnConfirmReturn').unbind('click')
             $('#btnConfirmReturn').click(function () {
                 var addCount = 0, sltID = $('#grid_qltd_TraDia').getKendoGrid().selectedKeyNames()
+                if (sltID.length == 0) {
+                    noti("Vui lòng chọn đĩa để xác nhận!",'warning');
+                    return
+                }
+                $("#dialog").kendoDialog({
+                    title: "Xác nhận",
+                    closable: true,
+                    modal: true,
+                    content: `Bạn xác nhận những đĩa này đã được trả?`,
+                    actions: [{
+                        text: 'Không'
+                    },
+                    {
+                        text: 'Có',
+                        primary: true,
+                        action: function () {
+                            sltID.forEach(function (item) {
+                                var currDataItem = grid_qltd_TraDia.dataSource.get(item)
+                                $.ajax({
+                                    url: urlAPI + '/Reservation/setOnHold',
+                                    dataType: "json",
+                                    type: 'post',
+                                    data: {
+                                        title: currDataItem.DiskName,
+                                        diskID: currDataItem.ID
+                                    },
+                                    success: function (e) {
+                                        $.ajax({
+                                            url: urlAPI + '/Disk/setStatus',
+                                            dataType: "json",
+                                            type: 'post',
+                                            data: {
+                                                id: currDataItem.ID,
+                                                status: e == true ? "Đang chờ" : "Trên kệ"
+                                            }
+                                        })
+                                        $.ajax({
+                                            url: urlAPI + '/RentalBill/setPayDate',
+                                            dataType: "json",
+                                            type: 'post',
+                                            data: {
+                                                id: currDataItem.IDBill,
+                                                fee: currDataItem.Fee
+                                            }
+                                        })
+                                        addCount++
+                                    }
+                                })
+                            })
 
-                sltID.forEach(function (item) {
-                    var currDataItem = grid_qltd_TraDia.dataSource.get(item)
-                    $.ajax({
-                        url: urlAPI + '/Reservation/setOnHold',
-                        dataType: "json",
-                        type: 'post',
-                        data: {
-                            title: currDataItem.DiskName,
-                            diskID: currDataItem.ID
-                        },
-                        success: function (e) {
-                            $.ajax({
-                                url: urlAPI + '/Disk/setStatus',
-                                dataType: "json",
-                                type: 'post',
-                                data: {
-                                    id: currDataItem.ID,
-                                    status: e==true?"Đang chờ":"Trên kệ"
+                            var syncInterval = setInterval(function () {
+                                if (addCount == sltID.length) {
+                                    clearInterval(syncInterval)
+                                    noti("Thao tác thành công!", "success")
+                                    $('thead [data-role="checkbox"]').click().click()
+                                    refreshGird('#grid_qltd_TraDia')
                                 }
-                            })
-                            $.ajax({
-                                url: urlAPI + '/RentalBill/setPayDate',
-                                dataType: "json",
-                                type: 'post',
-                                data: {
-                                    id: currDataItem.IDBill,
-                                    fee: currDataItem.Fee
-                                }
-                            })
-                            addCount++
+                            }, 100)
                         }
-                    })
-                })
-
-                var syncInterval = setInterval(function () {
-                    if (addCount == sltID.length) {
-                        clearInterval(syncInterval)
-                        noti("Thao tác thành công!", "success")
-                        $('thead [data-role="checkbox"]').click().click()
-                        refreshGird('#grid_qltd_TraDia')
                     }
-                }, 100)
+                    ],
+                    animation: {
+                        open: {
+                            effects: "fade:in"
+                        },
+                        close: {
+                            effects: "fade:out"
+                        }
+                    }
+                }).data("kendoDialog").open();
             })
 
             //hover
@@ -2398,3 +2428,4 @@ var btnRefreshInit = setInterval(function () {
         })
     }
 }, 100)
+

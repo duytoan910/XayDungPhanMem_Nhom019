@@ -19,10 +19,12 @@ namespace DiskManagerment.Controllers
             if (IsAdmin)
             {
                 ViewBag.UserPermission = "(Quản trị)";
+                ViewBag.isAdmin = true;
             }
             else
             {
                 ViewBag.UserPermission = "(Bán hàng)";
+                ViewBag.isAdmin = false;
             }
             
             return View();
