@@ -18,7 +18,7 @@ namespace DiskManagerment.Controllers
         public ActionResult LoginCheck(string user,string password)
         {
             var userAdmin = new { id = "admin", password = "123" };
-            var userClerk = new { id = "clerk", password = "123" };
+            var userClerk = new { id = "user", password = "123" };
             if(user == userAdmin.id)
             {
                 if(password == userAdmin.password)

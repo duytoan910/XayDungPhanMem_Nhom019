@@ -13,8 +13,8 @@ namespace DiskManagerment.Controllers
         public static bool IsAdmin { get; set; }
         public ActionResult LoginCheckView()
         {
-            //if(UserName == null)
-            //    return RedirectToAction("Index", "Login");
+            if (UserName == null)
+                return RedirectToAction("Index", "Login");
 
             if (IsAdmin)
             {
