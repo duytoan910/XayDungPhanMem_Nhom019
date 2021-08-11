@@ -57,9 +57,9 @@
     <Compile Include="DiskDAL.cs" />
     <Compile Include="DiskTitleDAL.cs" />
     <Compile Include="DiskTypeDAL.cs" />
-    <Compile Include="Migrations\202108081604029_update8.8.2021.cs" />
-    <Compile Include="Migrations\202108081604029_update8.8.2021.designer.cs">
-      <DependentUpon>202108081604029_update8.8.2021.cs</DependentUpon>
+    <Compile Include="Migrations\202108110706197_CreateDB.cs" />
+    <Compile Include="Migrations\202108110706197_CreateDB.designer.cs">
+      <DependentUpon>202108110706197_CreateDB.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,8 +79,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202108081604029_update8.8.2021.resx">
-      <DependentUpon>202108081604029_update8.8.2021.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202108110706197_CreateDB.resx">
+      <DependentUpon>202108110706197_CreateDB.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

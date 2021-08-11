@@ -72,6 +72,7 @@ namespace DAL
 
         public void addCustomer(Customer e)
         {
+            e.customerCode = "KH_" + getNextCodeIndex();
             db.Customers.Add(e);
             db.SaveChanges();
         }
@@ -103,6 +104,28 @@ namespace DAL
 
             db.Entry(x).State = EntityState.Modified;
             db.SaveChanges();
+        }
+        public int getNextCodeIndex()
+        {
+            string[] code = { "KH_" };
+            var arr = db.Customers.ToList();
+            var listIndex = new List<int>();
+            for (int i = 0; i < arr.Count(); i++)
+            {
+                try
+                {
+                    var str = arr[i].customerCode.Split(code, StringSplitOptions.None);
+                    listIndex.Add(int.Parse(str[1]));
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            if (listIndex.ToArray().Count() == 0)
+                return 1;
+
+            return listIndex.ToArray().Max() + 1;
         }
     }
 }
