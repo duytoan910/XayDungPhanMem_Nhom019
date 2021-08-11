@@ -11,7 +11,7 @@ namespace DiskManagerment.Controllers
         public ActionResult Index()
         {
             if (UserName != null)
-                return RedirectToAction("Index", "QuanLyKhachHang");
+                return RedirectToAction("LapPhieuThue", "QuanLyThueDia");
             else
                 return View();
         }
